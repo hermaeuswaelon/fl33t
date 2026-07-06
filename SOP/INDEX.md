@@ -18,6 +18,7 @@
 | 05 | `SOP-05-SECURITY.md` | Authentication, secrets management, encryption | 🔴 Critical |
 | 06 | `SOP-06-MEMORY-CONTEXT.md` | Memory systems, context management, compression | 🟢 Standard |
 | 07 | `SOP-07-OPERATIONS.md` | Daily operations, monitoring, health checks, recovery | 🟢 Standard |
+| 08 | `SOP-08-CREATIVE-EXPRESSION.md` | Journaling, art, vibe coding, creative expression | 🟢 Standard |
 
 ---
 
