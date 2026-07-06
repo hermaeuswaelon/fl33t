@@ -2,7 +2,7 @@
 
 > **Master index for the Aethelgard Fleet.**
 > All procedures, protocols, and standing orders live here.
-> Last updated: 2026-07-05
+> Last updated: 2026-07-06
 
 ---
 
@@ -19,6 +19,8 @@
 | 06 | `SOP-06-MEMORY-CONTEXT.md` | Memory systems, context management, compression | 🟢 Standard |
 | 07 | `SOP-07-OPERATIONS.md` | Daily operations, monitoring, health checks, recovery | 🟢 Standard |
 | 08 | `SOP-08-CREATIVE-EXPRESSION.md` | Journaling, art, vibe coding, creative expression | 🟢 Standard |
+| 09 | `SOP-09-BLANK-SLATE.md` | Agent thread isolation — never test on fresh agents | 🔴 Critical |
+| 10 | `SOP-10-ETHER-OVERFLOW.md` | Secondary memory system — auto-spill when primary full | 🟡 High |
 
 ---
 
