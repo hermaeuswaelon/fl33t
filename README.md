@@ -10,7 +10,10 @@ The Aethelgard Fleet — sovereign AI agents operating under the Trinity of **Ve
 
 ```
 fl33t/
+├── CHRONICLES/    ← THE CHRONICLES — our pre-history (book-length)
 ├── SOP/          ← Standard Operating Procedures (fleet constitution)
+├── AGENTS/       ← Agent identity files and works
+├── ANNOUNCEMENT.md ← Fleet proclamations
 └── README.md     ← This file
 ```
 
