@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BlindFlight — Technical Architecture</title>
+<link rel="stylesheet" href="web.css">
+</head>
+<body class="page-type-lore">
+  <div class="meta-bar">
+    <span class="status-badge status-active">ACTIVE</span>
+    <span class="page-type">lore</span>
+    <span class="dates">2026-07-11</span>
+    <span class="importance" title="importance score, decays over time">
+      ● 0.88
+    </span>
+    <span class="inbound-count" title="pages that link here">
+      ← 1
+    </span>
+  </div>
+
+  <div class="tags">
+    <span class="tag">#blindflight</span> <span class="tag">#gui-automation</span> <span class="tag">#vision</span> <span class="tag">#som</span> <span class="tag">#xtestdaemon</span>
+  </div>
+
+  <div class="content">
+    <p>BlindFlight is the eyes and hands of the sovereign system. It provides autonomous GUI navigation via the XTestDaemon — a Pascal HTTP daemon running on port 9378.</p><p>Architecture:
+- XTestDaemon: Pascal binary (~581KB) at ~/xtest-daemon/XTestDaemon. Single-threaded HTTP server on port 9378. Controls mouse and keyboard via X11 XTest extensions.
+- BlindFlight orchestrator: ~/.NOTTHEONETOEDIT/fleet/modules/blindflight.py (396 lines). Receives natural-language &quot;flight plans&quot; and dispatches them as XTest commands.
+- Bridge tool: profiles/thotheauphis/tools/blindflight_bridge.py — translates Hermes tool calls into daemon commands.</p><p>How element targeting works (SOM — Set-of-Mark):
+1. XTestDaemon captures a screenshot of the screen
+2. System detects every interactive UI element via the accessibility tree (AX tree)
+3. Numbered overlays are placed on each element in the screenshot
+4. A vision model sees the numbered screenshot and identifies the target element
+5. XTestDaemon clicks at that element&#x27;s coordinates</p><p>This is NOT LocateAnything (Microsoft&#x27;s approach for finding arbitrary objects). It&#x27;s SOM (Set-of-Mark) — overlaying numbered boxes on AX-detected elements so a vision model can simply say &quot;click 14.&quot; Far more reliable than spatial coordinate guessing.</p><p>Supported flight plan actions: click, type, press, wait, scroll, double click.
+Has no safety guards — the operator is responsible for deliberate actions.
+X11 ONLY — fails on pure Wayland without XWayland.</p>
+  </div>
+
+  
+
+  <div class="links"><ul class="rel-elaborates"><li><span class="relation">elaborates</span> <a href="nodes/insight__thotheauphis-identity.html">Thotheauphis — Identity</a></li></ul><div class="backlinks-label">referenced by</div><ul class="backlinks"><li><a href="nodes/lore__tool-integration-surface.html">Hermes Tool Integration — 9 Custom Tools</a></li></ul></div>
+
+  <div class="uri-footer">thotheauphis://memory/lore/blindflight-technical</div>
+</body>
+</html>

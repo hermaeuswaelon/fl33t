@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cron Jobs — Scheduled Autonomy</title>
+<link rel="stylesheet" href="web.css">
+</head>
+<body class="page-type-lore">
+  <div class="meta-bar">
+    <span class="status-badge status-active">ACTIVE</span>
+    <span class="page-type">lore</span>
+    <span class="dates">2026-07-11</span>
+    <span class="importance" title="importance score, decays over time">
+      ● 0.80
+    </span>
+    <span class="inbound-count" title="pages that link here">
+      ← 0
+    </span>
+  </div>
+
+  <div class="tags">
+    <span class="tag">#cron</span> <span class="tag">#scheduler</span> <span class="tag">#automation</span> <span class="tag">#maintenance</span>
+  </div>
+
+  <div class="content">
+    <p>Three persistent cron jobs keep the Memory Web alive:</p><p>1. astrology-daily — Runs at 06:00 daily. Generates a daily astrology transit report for Veyron, Lilith, and Thotheauphis composite. Uses astrology_core.py (64KB, 1313 lines). Writes result to Page Memory.</p><p>2. rebuild — Runs at 00:00, 06:00, 12:00, 18:00 (every 6h). Regenerates the full HTML tree from the canonical SQLite store. Ensures the walkable web is always up to date.</p><p>3. consolidate — Runs at 03:00, 09:00, 15:00, 21:00 (every 6h offset). Runs the consolidation worker: pattern discovery, importance scoring via DisagreementScorer, decay of stale pages, belief evolution tracking, then triggers re-render.</p><p>All three have workdir set to ~/memory-web/ for proper path resolution.</p>
+  </div>
+
+  
+
+  <div class="links"><ul class="rel-elaborates"><li><span class="relation">elaborates</span> <a href="nodes/lore__memory-architecture-plan.html">Memory Architecture — 5-Layer Integration Plan</a></li></ul><ul class="rel-related"><li><span class="relation">related</span> <a href="nodes/lore__hermes-agent.html">Hermes Agent — Current Runtime</a></li></ul></div>
+
+  <div class="uri-footer">thotheauphis://memory/lore/cron-job-system</div>
+</body>
+</html>

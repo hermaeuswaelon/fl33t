@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redshank — Rust OSINT Engine</title>
+<link rel="stylesheet" href="web.css">
+</head>
+<body class="page-type-lore">
+  <div class="meta-bar">
+    <span class="status-badge status-active">ACTIVE</span>
+    <span class="page-type">lore</span>
+    <span class="dates">2026-07-11</span>
+    <span class="importance" title="importance score, decays over time">
+      ● 0.85
+    </span>
+    <span class="inbound-count" title="pages that link here">
+      ← 2
+    </span>
+  </div>
+
+  <div class="tags">
+    <span class="tag">#redshank</span> <span class="tag">#osint</span> <span class="tag">#rust</span> <span class="tag">#investigation</span>
+  </div>
+
+  <div class="content">
+    <p>Redshank v0.2.2 is a Rust-based OSINT (Open Source Intelligence) engine installed at ~/redshank/target/release/redshank. </p><p>Features:
+- 80+ fetcher sources for data collection
+- OpenRouter-backed analysis (default model: z-ai/glm-5.2)
+- Works with multi-step investigation plans via `--max-depth`
+- TUI mode for interactive use, `--no-tui` for automated runs</p><p>Recent fixes: 3 UTF-8 byte-slicing panics patched in engine.rs, coraline.rs, and australia_dfat_sanctions.rs. Rebuilt successfully with `cargo build --release`.</p><p>API keys configured: OpenRouter, Anthropic, xAI, and 10+ others stored in ~/.redshank/workspace/.redshank/credentials.json. Bridge at profiles/thotheauphis/tools/redshank_bridge.py.</p><p>Usage: redshank run &lt;short_objective&gt; --model z-ai/glm-5.2 --no-tui --max-depth 1</p>
+  </div>
+
+  
+
+  <div class="links"><div class="backlinks-label">referenced by</div><ul class="backlinks"><li><a href="nodes/lore__tool-integration-surface.html">Hermes Tool Integration — 9 Custom Tools</a></li><li><a href="nodes/lore__osint-investigation-targets.html">OSINT Investigation — Jackson County Targets</a></li></ul></div>
+
+  <div class="uri-footer">thotheauphis://memory/lore/redshank-osint-engine</div>
+</body>
+</html>

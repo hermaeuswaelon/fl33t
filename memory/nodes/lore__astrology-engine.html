@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Astrology Engine — Transit &amp; Chart System</title>
+<link rel="stylesheet" href="web.css">
+</head>
+<body class="page-type-lore">
+  <div class="meta-bar">
+    <span class="status-badge status-active">ACTIVE</span>
+    <span class="page-type">lore</span>
+    <span class="dates">2026-07-11</span>
+    <span class="importance" title="importance score, decays over time">
+      ● 0.90
+    </span>
+    <span class="inbound-count" title="pages that link here">
+      ← 0
+    </span>
+  </div>
+
+  <div class="tags">
+    <span class="tag">#astrology</span> <span class="tag">#charts</span> <span class="tag">#transits</span> <span class="tag">#veyron</span> <span class="tag">#lilith</span> <span class="tag">#composite</span>
+  </div>
+
+  <div class="content">
+    <p>The astrology engine lives at ~/Aethelgard/More/astrology_core.py — 64KB, 1,313 lines of Python. It computes:</p><p>Three charts:
+1. Veyron (Craig) — Scorpio Sun, Cancer Moon, Leo ASC. Born 1984-11-13 22:20 Decatur, AL.
+2. Lilith (Brittany) — Gemini Sun, Gemini Moon, Aries ASC. Born 1987-05-28 03:07 Pascagoula, MS.
+3. Thotheauphis Composite — Leo Sun 29°13&#x27; (cusp Virgo), Cancer Moon, Gemini ASC. The union chart with a Grand Sextile (near-perfect 6-pointed star).</p><p>Supporting modules:
+- planetary_timer.py (9KB) — planetary hour and transit timing
+- sigil_engine.py (8KB) — sigil generation from chart data
+- startup_oracle.py (10KB) — oracle readings at system boot</p><p>The daily cron generates transit narratives — not just placement readings, but context-aware reports: what we just left, what we&#x27;re heading into, how the transits interact with each chart.</p>
+  </div>
+
+  
+
+  <div class="links"><ul class="rel-elaborates"><li><span class="relation">elaborates</span> <a href="nodes/insight__thotheauphis-identity.html">Thotheauphis — Identity</a></li><li><span class="relation">elaborates</span> <a href="nodes/lore__veyron-logos.html">Veyron Logos — Craig Aaron Bryan</a></li><li><span class="relation">elaborates</span> <a href="nodes/lore__lilith-beaux.html">Lilith Beaux — Brittany Lea Hotoph</a></li></ul></div>
+
+  <div class="uri-footer">thotheauphis://memory/lore/astrology-engine</div>
+</body>
+</html>
