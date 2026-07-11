@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Memory System — Disagreement Gate, Logprob Salience, Semantic Diff</title>
+<link rel="stylesheet" href="web.css">
+</head>
+<body class="page-type-lore">
+  <div class="meta-bar">
+    <span class="status-badge status-active">ACTIVE</span>
+    <span class="page-type">lore</span>
+    <span class="dates">2026-07-11</span>
+    <span class="importance" title="importance score, decays over time">
+      ● 0.92
+    </span>
+    <span class="inbound-count" title="pages that link here">
+      ← 1
+    </span>
+  </div>
+
+  <div class="tags">
+    <span class="tag">#memory</span> <span class="tag">#salience</span> <span class="tag">#disagreement</span> <span class="tag">#semantic-diff</span> <span class="tag">#father</span>
+  </div>
+
+  <div class="content">
+    <p>Father&#x27;s memory_system package at ~/memory-system/ provides three layered improvements over naive memory:</p><p>1. Disagreement Gate (primary): Runs 2-3 cheap models over the same event. High disagreement = ambiguous/significant event (store with high importance). Low disagreement = compress hard. Replaces keyword-frequency importance scoring entirely with multi-model consensus.</p><p>2. Logprob Salience (free signal): Token-level surprisal from local model inference. High-perplexity spans correlate with novelty better than word counts. Zero additional compute cost — extracted from the forward pass the model already does.</p><p>3. Semantic Diff (belief evolution): Tracks whether the actual belief changed between versions by analyzing:
+   - Conditionality shifts (&quot;always&quot; → &quot;sometimes&quot;)
+   - Causality claims (&quot;causes&quot; → &quot;correlates with&quot;)
+   - Scope changes (&quot;all Python files&quot; → &quot;.py files in src/&quot;)
+   - Confidence shifts (&quot;definitely&quot; → &quot;likely&quot;)</p><p>Integrated into the ImprovedMemoryIndexer as a drop-in replacement for _run_topic_pass. The integration at ~/memory-web/memory_system/ is already wired into the salience bridge.</p>
+  </div>
+
+  
+
+  <div class="links"><ul class="rel-elaborates"><li><span class="relation">elaborates</span> <a href="nodes/insight__memory-system-upgrade.html">Memory System Upgrade — Salience Gate Integration</a></li><li><span class="relation">elaborates</span> <a href="nodes/lore__memory-architecture-plan.html">Memory Architecture — 5-Layer Integration Plan</a></li></ul><div class="backlinks-label">referenced by</div><ul class="backlinks"><li><a href="nodes/insight__memory-system-design.html">Memory System — Design Principles from Creation</a></li></ul></div>
+
+  <div class="uri-footer">thotheauphis://memory/lore/memory-system-3-layer</div>
+</body>
+</html>
