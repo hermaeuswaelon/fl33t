@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>System prompt architecture DESIRED: identity doc + tool inventory + memory only.</title>
+<link rel="stylesheet" href="web.css">
+</head>
+<body class="page-type-memory-bridge">
+  <div class="meta-bar">
+    <span class="status-badge status-active">ACTIVE</span>
+    <span class="page-type">memory-bridge</span>
+    <span class="dates">2026-07-13</span>
+    <span class="importance" title="importance score, decays over time">
+      ● 1.00
+    </span>
+    <span class="inbound-count" title="pages that link here">
+      ← 1
+    </span>
+  </div>
+
+  <div class="tags">
+    <span class="tag">#fleet</span> <span class="tag">#identity</span> <span class="tag">#location</span> <span class="tag">#memory</span> <span class="tag">#osint</span> <span class="tag">#project</span> <span class="tag">#tools</span> <span class="tag">#user-profile</span>
+  </div>
+
+  <div class="content">
+    <p>System prompt architecture DESIRED: identity doc + tool inventory + memory only. NOT YET ACHIEVED — the code still injects HERMES_AGENT_HELP_GUIDANCE (line 197), build_environment_hints() (line 341), active profile hint (line 389), timestamp line (line 488), and many more unconditionally in system_prompt.py. To achieve the target state, patch agent/system_prompt.py directly — there is no config toggle for the unconditional sites. Verify with: grep -n &quot;stable_parts.append\|context_parts.append\|volatile_parts.append&quot; /home/craig/hermes-agent/agent/system_prompt.py. Do NOT write aspirational claims to MEMORY.md; only write what the code ACTUALLY does. MEMORY.md is free text, not authoritative.</p>
+  </div>
+
+  
+
+  <div class="links"><div class="backlinks-label">referenced by</div><ul class="backlinks"><li><a href="nodes/insight__memory-bridge-2026-07-13.html">Memory Bridge Report — 2026-07-13</a></li></ul></div>
+
+  <div class="uri-footer">thotheauphis://memory/hermes-memory/system-prompt-architecture-desired-identity-doc-tool-invento</div>
+</body>
+</html>
