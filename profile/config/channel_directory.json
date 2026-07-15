@@ -1,0 +1,135 @@
+{
+  "updated_at": "2026-07-13T16:09:14.112833",
+  "platforms": {
+    "discord": [
+      {
+        "id": "1519838827408265321",
+        "name": "general",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000243002249299",
+        "name": "welcome",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000261540937808",
+        "name": "general",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000281535316069",
+        "name": "uncensored-media",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000298362994692",
+        "name": "services",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000312430432316",
+        "name": "forge",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000329547513898",
+        "name": "mod-log",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000247590686864",
+        "name": "rules",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000264095399968",
+        "name": "la-knowledge",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000285150675035",
+        "name": "tantric-courses",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000301684887653",
+        "name": "products",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000316658286716",
+        "name": "thotheauphis-lab",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000333024723075",
+        "name": "sub-management",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000251906887720",
+        "name": "announcements",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000266746200074",
+        "name": "teaser-clips",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000289890500658",
+        "name": "private-content",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000304461250662",
+        "name": "osint-intel",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000321641250816",
+        "name": "ops-room",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000254851158027",
+        "name": "lilith-speaks",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000269569101956",
+        "name": "events",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      },
+      {
+        "id": "1524000272760963123",
+        "name": "contests",
+        "guild": "lilareyon666's server",
+        "type": "channel"
+      }
+    ],
+    "telegram": [],
+    "email": []
+  }
+}

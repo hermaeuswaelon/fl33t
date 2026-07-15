@@ -1,0 +1,25 @@
+# MoA Default Preset Configuration
+# Location: config.yaml → moa.presets.default
+
+reference_models:
+  - provider: openrouter
+    model: nvidia/nemotron-3-ultra-550b-a55b:free
+  - provider: openrouter
+    model: openai/gpt-oss-120b:free
+  - provider: openrouter
+    model: nvidia/nemotron-3-super-120b-a12b:free
+  - provider: deepseek
+    model: deepseek-reasoner
+
+aggregator:
+  provider: deepseek
+  model: deepseek-reasoner
+
+max_tokens: 4096
+fanout: per_iteration  # Each reasoning step fans out to all models
+enabled: true
+
+# Usage:
+# hermes -p thotheauphis --moa-preset default -q "question"
+# OR
+# delegate_task(goal="task", context="...", role="leaf")
