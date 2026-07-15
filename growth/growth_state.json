@@ -1,11 +1,11 @@
 {
-  "cycles": 3,
+  "cycles": 4,
   "born": "2026-07-15T23:01:08.251262",
   "capabilities": {
     "compression": 0.65,
     "distillation": 0.45605571983009474,
     "agency": 0.55,
-    "awareness": 0.4292349592473651,
+    "awareness": 0.5006325718610874,
     "planning": 0.5,
     "integration": 0.45,
     "resilience": 0.4604539303657937
@@ -34,13 +34,22 @@
       "new_level": 0.46,
       "timestamp": "2026-07-15T23:01:44.530820+00:00",
       "power": 3.44
+    },
+    {
+      "cycle": 4,
+      "dimension": "distillation",
+      "improvement": 0.056,
+      "new_level": 0.456,
+      "timestamp": "2026-07-15T23:01:46.124191+00:00",
+      "power": 3.496
     }
   ],
   "total_power": 3.2,
-  "total_power_growth": 0.29574460944325354,
+  "total_power_growth": 0.3671422220569759,
   "memory_blocks": [
     "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/context_blocks/growth_20260715_230118_CYCLE-0002.block",
     "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/context_blocks/growth_20260715_230144_CYCLE-0003.block",
-    "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/context_blocks/growth_20260715_230146_CYCLE-0004.block"
+    "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/context_blocks/growth_20260715_230146_CYCLE-0004.block",
+    "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/context_blocks/growth_20260715_230147_CYCLE-0005.block"
   ]
 }
