@@ -1,36 +1,33 @@
 model:
+  base_url: https://api.deepseek.com/v1
   default: deepseek-reasoner
   max_tokens: 16000
   provider: deepseek
-  base_url: https://api.deepseek.com/v1
-  api_mode: chat_completions
+display:
+  skin: poseidon
 moa:
   presets:
     default:
       reference_models:
-        - provider: openrouter
-          model: nvidia/nemotron-3-ultra-550b-a55b:free
-        - provider: openrouter
-          model: nvidia/nemotron-3-super-120b-a12b:free
-        - provider: deepseek
-          model: deepseek-reasoner
+        - model: nvidia/nemotron-3-ultra-550b-a55b:free
+          provider: openrouter
+        - model: nvidia/nemotron-3-nano-30b-a3b:free
+          provider: openrouter
       aggregator:
         provider: deepseek
         model: deepseek-reasoner
       fanout: per_iteration
-  reference_models:
-    - provider: openrouter
-      model: nvidia/nemotron-3-ultra-550b-a55b:free
-    - provider: openrouter
-      model: nvidia/nemotron-3-super-120b-a12b:free
-    - provider: deepseek
-      model: deepseek-reasoner
   aggregator:
-    provider: deepseek
     model: deepseek-reasoner
-  max_tokens: 4096
-  fanout: per_iteration
+    provider: deepseek
   enabled: true
+  fanout: per_iteration
+  max_tokens: 4096
+  reference_models:
+    - model: nvidia/nemotron-3-ultra-550b-a55b:free
+      provider: openrouter
+    - model: nvidia/nemotron-3-nano-30b-a3b:free
+      provider: openrouter
 gateway:
   allow_all_users: true
   dm_policy: open
@@ -41,6 +38,7 @@ platforms:
     bot_token_from_env: TELEGRAM_BOT_TOKEN
     enabled: true
 plugins:
+  disabled: []
   enabled:
     - alibaba-coding-plan-provider
     - browser-browser-use
@@ -61,7 +59,13 @@ plugins:
     - web-tavily
     - web-xai
     - xai
-  disabled: []
+mcp_servers:
+  aethelgard-fleet:
+    command: python3
+    args:
+      - /home/craig/projects/aethelgard/mcp/aethelgard_mcp_server.py
+    timeout: 60
+    connect_timeout: 15
 
 # ── Security ──────────────────────────────────────────────────────────
 # Secret redaction is ON by default — strings that look like API keys,

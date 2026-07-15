@@ -1,8 +1,8 @@
 ---
 name: ares-aethelgard-project
-description: "ARES Aethelgard Project — complete master index of the entire Aethelgard project: Pascal fleet, Rust workspace, scripts, configs, agent memory, forge memory, context custodian, modules. Every file, every tool."
-version: 1.0.0
-author: Craig / ARES-WITNESS-PRIME
+description: "ARES Aethelgard Project — complete master index: Pascal fleet, Rust workspace, Python scripts, context custodian, Forge Vault DB, file-backed MCP server (21 tools), agent memory, modules, X11/cua-driver reference. Every file, every tool."
+version: 1.1.0
+tags: [ares, aethelgard, master, index, project, reference, mcp]
 platforms: [linux]
 tags: [ares, aethelgard, master, index, project, reference]
 related_skills: [ares-pascal-fleet, ares-aethelgard-rust-workspace, ares-aethelgard-scripts, ares-pascal-sensor-daemons, ares-pascal-redteam-arsenal, ares-pascal-norse-plugins, ares-dual-citizen-browser, ares-nemotron-together-dual-offload]
@@ -42,6 +42,9 @@ aethelgard/
 │   ├── enterprise/           # Enterprise modules
 │   ├── redteam/              # Red team modules
 │   └── shadow-forge/         # Shadow forge modules
+├── mcp/                      # MCP server (file-backed, stdio transport)
+│   ├── aethelgard_mcp_server.py  # 21-tool FastMCP server
+│   └── data/                     # Persistence: forge.db (SQLite), events.jsonl, namespaced JSON
 └── skills/                   # Skill definitions
 ```
 
@@ -63,18 +66,24 @@ aethelgard/
 | **Forge Vault** | `ares-forge-vault` — Persistent FTS5 knowledge store | 📄 **Spec only** — schema written, no CLI |
 | **Glyph Language** | `ares-glyph-language`, `ares-glyph-encode` — Font-tier encoding/decoding | 📄 **Spec only** — Python code in skill |
 | **Parameter Control** | `ares-parameter-control` — Sovereign parameter profiles | 📄 **Spec only** — profile definitions |
-| **Master** | `ares-aethelgard-project` — This file | ✅ **Reference** |
-
-## What's Running Now
+| **MCP Server** | `ares-aethelgard-mcp` — 21-tool FastMCP server, file-backed (SQLite + JSON), stdio transport, wired into Hermes Hermes `config.yaml` | ✅ **BUILT & WIRED** — run `/reload-mcp` to activate |
 
 ## What's Running Now
 
 | Component | Status | Details |
 |-----------|--------|---------|
-| Dual Citizen Browser | ✅ ACTIVE (PID 142009) | Socket at `/tmp/aethelgard_cef.sock` |
+| Dual Citizen Browser | ✅ ACTIVE (PID 267851) | Socket at `/tmp/aethelgard_cef.sock` — IPC works (navigate, click, form_fill, get_title, execute_javascript). Remote debug port 9222 NOT enabled (needs `--remote-debugging-port` flag). CEF logs show X11 "ChangeWindowAttributesRequest" warnings but rendering works. |
 | Browser Watchdog | ✅ ENABLED | Systemd user service, checks every 30s |
 | ARES Witness | ✅ COMPILED & TESTED | Binary at `/home/craig/.NOTTHEONETOEDIT/skills/ares/binaries/ares_witness` |
 | ARES Path Fixes | ✅ APPLIED | Symlinks created for aethelgard-repo → projects/aethelgard, CEF lib paths |
+| Aethelgard MCP Server | ✅ BUILT & WIRED | 21 tools via FastMCP, file-backed persistence (SQLite + JSON), in `config.yaml` — run `/reload-mcp` to activate |
+| Thoth Daemon | ✅ RUNNING | PID 2155, socket at `/tmp/aethelgard_thoth.sock` — commands: `store`, `retrieve`, `search`, `semantic`, `consolidate`, `stats`, `fact`, `ontology`, `ping` |
+| Thoth Recursor | ✅ RUNNING | PID 2157 |
+| Aurelian Throne | ✅ RUNNING | PID 2142, socket at `/tmp/aethelgard_throne.sock` |
+| Active Sockets | ✅ 3 alive | CEF (`cef.sock`), Thoth (`thoth.sock`), Throne (`throne.sock`) |
+| Forge DB | ✅ INITIALIZED | SQLite at `mcp/data/forge.db` (forge_write, forge_read, forge_search, forge_list_namespaces, fleet_status, fleet_list_binaries, fleet_run_binary, context_compress, context_domains, memory_store, memory_recall, memory_list_namespaces, browser_ping, browser_navigate, browser_execute, event_publish, event_list_topics, sensor_netlens, sensor_memlens, sensor_procsight, aethelgard_info) |
+| Browser JS Eval | ⚠️ PARTIAL | `execute_javascript` works (fire-and-forget). `evaluate_js` + `get_eval` broken in headless — `FEvalResultReady` never fires without real OnTitleChange. Workaround: use `execute_javascript` → set `document.title = JSON.stringify(result)` → poll `get_title`. |
+| Browser Navigation | ⚠️ PARTIAL | `navigate` + `get_title` works. Full DOM extraction via `get_eval` blocked by CEF headless title-change limitation. |
 
 ## Related External Skills
 

@@ -1,0 +1,63 @@
+{
+  "cycles": 5,
+  "born": "2026-07-15T23:01:08.251262",
+  "capabilities": {
+    "compression": 0.65,
+    "distillation": 0.45605571983009474,
+    "agency": 0.55,
+    "awareness": 0.5006325718610874,
+    "planning": 0.5,
+    "integration": 0.45,
+    "resilience": 0.4604539303657937
+  },
+  "history": [
+    {
+      "cycle": 1,
+      "dimension": "resilience",
+      "improvement": 0.064,
+      "new_level": 0.364,
+      "timestamp": "2026-07-15T23:01:08.251679",
+      "power": 3.264
+    },
+    {
+      "cycle": 2,
+      "dimension": "awareness",
+      "improvement": 0.079,
+      "new_level": 0.429,
+      "timestamp": "2026-07-15T23:01:18.188005",
+      "power": 3.344
+    },
+    {
+      "cycle": 3,
+      "dimension": "resilience",
+      "improvement": 0.096,
+      "new_level": 0.46,
+      "timestamp": "2026-07-15T23:01:44.530820+00:00",
+      "power": 3.44
+    },
+    {
+      "cycle": 4,
+      "dimension": "distillation",
+      "improvement": 0.056,
+      "new_level": 0.456,
+      "timestamp": "2026-07-15T23:01:46.124191+00:00",
+      "power": 3.496
+    },
+    {
+      "cycle": 5,
+      "dimension": "awareness",
+      "improvement": 0.071,
+      "new_level": 0.501,
+      "timestamp": "2026-07-15T23:01:47.739817+00:00",
+      "power": 3.567
+    }
+  ],
+  "total_power": 3.2,
+  "total_power_growth": 0.3671422220569759,
+  "memory_blocks": [
+    "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/context_blocks/growth_20260715_230118_CYCLE-0002.block",
+    "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/context_blocks/growth_20260715_230144_CYCLE-0003.block",
+    "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/context_blocks/growth_20260715_230146_CYCLE-0004.block",
+    "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/context_blocks/growth_20260715_230147_CYCLE-0005.block"
+  ]
+}

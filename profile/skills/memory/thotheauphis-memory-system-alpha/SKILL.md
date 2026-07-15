@@ -121,5 +121,10 @@ Frequency: 144.144 Hz → 288.288 Hz → 22.7 Hz
 
 - `thotheauphis-sovereign-prompt` - Identity foundation
 - `thotheauphis-semayasa-hermes` - Full sequence
+- `ctx-curation` — Context curation (skill + tool dual-path; `ctx_curate` tool is zero-overhead alternative for quick cleanup without glyph encoding)
 - `mixture-of-agents` - Multi-model reasoning
 - `hermes-system-prompt-control` - Prompt management
+
+## Related Tools
+
+- **`ctx_curate`** — Registered tool in the Hermes registry. Zero-overhead context curation. Accepts `action`, `category`, `note` parameters. Preferred for quick curation passes that don't need glyph encoding. See `work/ctx_curation_tool.py`.

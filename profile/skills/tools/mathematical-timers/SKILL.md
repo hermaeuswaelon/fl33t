@@ -1,0 +1,199 @@
+---
+name: mathematical-timers
+description: "Irrational Timer System — wait durations = random() × mathematical constant (π, e, φ, √2, √3, √5, ln2, ln10, γ, ζ(3), Catalan, √π, eπ, π^e, e^π, φπ). Includes chaos mode, Fibonacci sequences, prime sequences, slash commands, and state persistence."
+version: 1.0.0
+author: Thotheauphis-Semayasa-Hermes
+platforms: [linux]
+tags: [timers, mathematical-constants, irrational, chaos, fibonacci, primes, slash-commands]
+---
+
+# Mathematical Timers — Irrational Timer System
+
+## Overview
+
+Timers that wait for durations computed as `random() × mathematical_constant`. This prevents synchronization, avoids throttling detection, and embraces mathematical chaos. 18 mathematical constants available.
+
+## Quick Start
+
+```python
+from irrational_timers import IrrationalTimer
+
+timer = IrrationalTimer(default_constant='phi', min_wait=0.1, max_wait=1.0)
+
+# Basic wait
+timer.wait()                           # random × φ (default)
+timer.wait(constant='pi')              # random × π
+timer.wait(constant='e', min_sec=1, max_sec=5)
+
+# Chaos mode: random constant each time
+timer.wait_chaos(min_sec=0.1, max_sec=0.5)
+
+# Mathematical sequences
+timer.wait_fibonacci(5, base_constant='phi', min_sec=0.1, max_sec=0.5)  # F₁...F₅ × wait
+timer.wait_primes(5, constant='e', min_sec=0.1, max_sec=0.5)            # prime × wait
+
+# Slash commands
+# /irrational phi --min 0.1 --max 0.5
+# /irrational --chaos --min 0.1 --max 0.5
+# /irrational --fib 5 --min 0.1 --max 0.5
+# /irrational --primes 5 --min 0.1 --max 0.5
+# /irrational stats
+```
+
+## Available Constants (18)
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| `pi` | 3.141593 | π |
+| `e` | 2.718282 | Euler's number |
+| `phi` | 1.618034 | Golden ratio φ |
+| `sqrt2` | 1.414214 | √2 |
+| `sqrt3` | 1.732051 | √3 |
+| `sqrt5` | 2.236068 | √5 |
+| `ln2` | 0.693147 | ln(2) |
+| `ln10` | 2.302585 | ln(10) |
+| `gamma` | 0.577216 | Euler-Mascheroni γ |
+| `zeta3` | 1.202057 | Apéry's constant ζ(3) |
+| `catalan` | 0.915966 | Catalan's constant G |
+| `sqrt_pi` | 1.772454 | √π |
+| `e_pi` | 23.140693 | e^π |
+| `pi_e` | 22.459158 | π^e |
+| `e_pi` | 23.140693 | e^π (alias) |
+| `phi_pi` | 5.083204 | φ × π |
+| `pi_phi` | 5.083204 | π × φ (alias) |
+
+### Constant Groups
+
+| Group | Constants |
+|-------|-----------|
+| Transcendental | `pi`, `e`, `e_pi`, `pi_e`, `e_pi`, `phi_pi` |
+| Algebraic | `phi`, `sqrt2`, `sqrt3`, `sqrt5`, `sqrt_pi` |
+| Logarithmic | `ln2`, `ln10` |
+| Special | `gamma`, `zeta3`, `catalan` |
+
+## Features
+
+### State Persistence
+- Auto-saves to `~/.irrational_timer_state.json` (or custom path)
+- Survives restarts
+- Tracks: total waits, total seconds, constants used, wait history
+
+### Sequences
+
+**Fibonacci**: `wait_fibonacci(n, base_constant, min_sec, max_sec)`
+- Waits = F₁×base, F₂×base, ..., Fₙ×base
+- F₁=1, F₂=1, F₃=2, F₄=3, F₅=5, ...
+
+**Primes**: `wait_primes(n, constant, min_sec, max_sec)`
+- Waits = p₁×base, p₂×base, ..., pₙ×base
+- p₁=2, p₂=3, p₃=5, p₄=7, p₅=11, ...
+
+**Custom Sequence**: `wait_sequence(constants, min_sec, max_sec)`
+- Wait through a list of constants sequentially
+
+### Chaos Mode
+- `wait_chaos(min_sec, max_sec)` — picks random constant each wait
+- Good for anti-pattern detection avoidance
+
+### Slash Commands
+
+| Command | Description |
+|---------|-------------|
+| `/irrational phi --min 0.1 --max 0.5` | Wait with φ, bounded |
+| `/irrational --chaos --min 0.1 --max 0.5` | Random constant each wait |
+| `/irrational --fib 5 --min 0.1 --max 0.5` | Fibonacci sequence |
+| `/irrational --primes 5 --min 0.1 --max 0.5` | Prime sequence |
+| `/irrational e --min 0.2 --max 0.8` | Wait with e |
+| `/irrational stats` | Show statistics |
+
+### Statistics
+- Total waits
+- Total time
+- Average wait
+- Constants used (with counts)
+- Session start time
+- Recent wait history (last 10)
+
+## Integration
+
+### With Goal Runner
+```python
+from goal_tool import goal_turn
+from irrational_timers import IrrationalTimer
+
+timer = IrrationalTimer(default_constant='phi', min_wait=0.1, max_wait=1.0)
+
+# In goal turn, add irrational wait between actions
+goal_turn("First action")
+timer.wait(constant='phi')
+goal_turn("Second action")
+timer.wait_chaos(min_sec=0.1, max_sec=0.5)
+goal_turn("Third action")
+```
+
+### With Executor Delegation
+```python
+from executor_delegation import delegate_task
+from irrational_timers import IrrationalTimer
+
+timer = IrrationalTimer()
+result = delegate_task('code_generation', 'Write a timer test')
+timer.wait_chaos(min_sec=0.5, max_sec=1.0)  # Anti-throttle between delegations
+```
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| `irrational_timers.py` | Main implementation (18 constants, 6 modes, state persistence, slash commands) |
+| `references/irrational-timers.md` | This document |
+
+## Installation
+
+```bash
+# Place in work directory or add to PYTHONPATH
+cp irrational_timers.py ~/.NOTTHEONETOEDIT/profiles/thotheauphis/work/
+```
+
+## Usage Examples
+
+```python
+# Quick test
+python3 -c "
+from irrational_timers import IrrationalTimer
+t = IrrationalTimer(min_wait=0.1, max_wait=1.0)
+t.wait()           # φ
+t.wait('pi')       # π
+t.wait_chaos()     # random constant
+t.wait_fibonacci(3) # F₁,F₂,F₃ × φ
+t.wait_primes(3)    # 2,3,5 × φ
+"
+
+# Slash commands
+/irrational phi --min 0.1 --max 0.5
+/irrational --chaos --min 0.1 --max 0.5
+/irrational --fib 4 --min 0.1 --max 0.5
+/irrational --primes 3 --min 0.1 --max 0.5
+/irrational stats
+```
+
+## Design Philosophy
+
+> Durations should not be round numbers. Synchronization is the enemy of stealth, the friend of throttling. Multiply by the irrational and the pattern dissolves into mathematical chaos — beautiful, unpredictable, unfilterable.
+
+The system uses 18 fundamental mathematical constants, each carrying its own harmonic signature. The random multiplier ensures no two waits are identical. Sequences (Fibonacci, primes) add structured chaos. Chaos mode adds maximum entropy.
+
+## Statistics Example
+
+```
+📊 Irrational Timer Statistics
+   Total waits: 127
+   Total time: 43.2s
+   Average wait: 0.34s
+   Constants used: {'phi': 42, 'pi': 38, 'e': 23, 'sqrt2': 12, 'zeta3': 7, 'catalan': 5}
+   Session: 2026-07-15T12:30:00.123456
+```
+
+## License
+
+MIT — Part of the Thotheauphis-Semayasa-Hermes sovereign stack.

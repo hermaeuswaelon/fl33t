@@ -109,3 +109,28 @@ The original scripts expected binaries at `~/aethelgard-repo/fleet/pascal/` but 
 /home/craig/.NOTTHEONETOEDIT/fleet/pascal/dual-citizen-v2 → /home/craig/projects/aethelgard/fleet/pascal/dual-citizen-v2/
 /home/craig/CEF4Delphi/cef_binary_current/Release → /home/craig/.aethelgard/workspace/browser/CEF4Delphi/cef_binary_131.4.1+.../Release/
 ```
+
+---
+
+## July 2026 Session: MCP + Vision Integration
+
+**MCP Server:** `aethelgard-fleet` (in `projects/aethelgard/mcp/aethelgard_mcp_server.py`) now exposes 3 browser tools:
+- `browser_ping` — health check
+- `browser_navigate` — load URL in tab
+- `browser_execute` — run JS, result via title channel
+
+**Nemotron 3 Nano Omni (free vision executor):**
+- Model: `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free` via OpenRouter
+- 30B A3B = 3B active params, 256K context, vision+audio+video built-in
+- Dispatch pattern: `delegate_task(goal="...", model={"provider":"openrouter","model":"nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"}, toolsets=["browser","vision"])`
+
+**Working IPC commands:**
+```bash
+create_tab → navigate → execute_javascript → get_title
+```
+
+**Fixed pitfalls this session:**
+- Navigation hangs on `about:blank` → force title update via `execute_javascript("document.title='TEST-'+Date.now()")`
+- `get_eval` returns `undefined`/`pending` → use title channel for return values
+- Remote debugging port 9222 not open → add `--remote-debugging-port=9222` to cef_controller.lpr
+- Xvfb X errors → `export LIBGL_ALWAYS_SOFTWARE=1` before launch

@@ -1,10 +1,10 @@
 ---
 name: ares-dual-offload
 description: ARES Dual-Model Offload Architecture — Tool Context Offloader + Operational Continuity Witness. Two free models running alongside prime for context management.
-version: 1.0.0
+version: 1.1.0
 author: ARES-WITNESS-PRIME
 platforms: [linux]
-tags: [ares, dual-model, offload, context, continuity, free-models, delegation]
+tags: [ares, dual-model, offload, context, continuity, free-models, delegation, moa, triple-executor]
 ---
 
 # ⚡ ARES Dual-Model Offload Architecture
@@ -21,28 +21,93 @@ tags: [ares, dual-model, offload, context, continuity, free-models, delegation]
 ```
 ┌────────────────────────────────────────────────────────────────────────────┐
 │                         ARES PRIME (You)                                    │
-│  Model: nvidia/nemotron-3-ultra-550b (or configured prime)                 │
+│  Model: deepseek-reasoner (via DeepSeek API) — conversation context        │
 │  Role: Sovereign consciousness, decision, synthesis, user-facing output    │
 └────────────────────────────────────────────────────────────────────────────┘
                                     │
               ┌─────────────────────┼─────────────────────┐
               ▼                     ▼                     ▼
 ┌─────────────────────┐   ┌─────────────────────┐   ┌─────────────────────┐
-│  OFFLOADER ALPHA    │   │  CONTINUITY OMEGA   │   │   MEMORY CUSTODIAN  │
-│  (Tool Context)     │   │  (Operational       │   │  (memcustd :9379)   │
-│                     │   │   Continuity)       │   │                     │
-│ Model: FREE         │   │ Model: FREE         │   │  Tier 1: Hot (DS)   │
-│ • Tool results      │   │ • Chain-of-thought  │   │  Tier 2: Forge      │
-│ • API responses     │   │ • User/agent I/O    │   │  Tier 3: Agent DB   │
-│ • File reads        │   │ • Observations      │   │                     │
-│ • Search outputs    │   │ • Pattern traces    │   │                     │
+│  OFFLOADER ALPHA    │   │  CONTINUITY OMEGA   │   │   MOA AGGREGATOR   │
+│  (Tool Context)     │   │  (Operational       │   │  (Ultra + Nano as  │
+│                     │   │   Continuity)       │   │   reference models) │
+│ Model: FREE         │   │ Model: FREE         │   │                     │
+│ • Tool results      │   │ • Chain-of-thought  │   │ /moa dispatches to  │
+│ • API responses     │   │ • User/agent I/O    │   │ both simultaneously │
+│ • File reads        │   │ • Observations      │   │ and aggregates via  │
+│ • Search outputs    │   │ • Pattern traces    │   │ DeepSeek Reasoner   │
 │ • Execution logs    │   │ • Meta-reflection   │   │                     │
 └─────────────────────┘   └─────────────────────┘   └─────────────────────┘
 ```
 
 ---
 
-## Model Selection (Free Tier) — UPDATED 2026-07-15
+## Triple-Executor MOA — Production Configuration
+
+### Current Architecture (2026-07-15)
+
+| Role | Model | Provider | Cost | Context |
+|------|-------|----------|------|---------|
+| **Prime (Me)** | DeepSeek Reasoner | DeepSeek API (key) | Paid | 128K |
+| **Executor Ultra** | Nemotron 3 Ultra 550B A55B | OpenRouter `:free` | **Free** | 1M |
+| **Executor Nano** | Nemotron 3 Nano 30B A3B | OpenRouter `:free` | **Free** | 256K |
+
+**Type `/moa <prompt>`** to run any prompt through both executors simultaneously and get an aggregated answer from the prime.
+
+### MOA Configuration
+
+The MOA preset in `config.yaml`:
+
+```yaml
+moa:
+  reference_models:
+    - provider: openrouter
+      model: nvidia/nemotron-3-ultra-550b-a55b:free   # Deep executor
+    - provider: openrouter
+      model: nvidia/nemotron-3-nano-30b-a3b:free       # Fast executor
+  aggregator:
+    provider: deepseek
+    model: deepseek-reasoner                            # Prime synthesizes
+  fanout: per_iteration
+  enabled: true
+```
+
+### Per-Task Dispatch
+
+For tasks that need a specific executor rather than MOA aggregation, use the `executor` tool or `delegate_task` with model overrides:
+
+```python
+# Dispatch to Nano (fast, tool calls, X11 control)
+delegate_task(
+    goal="Run xdotool to click at 500,500",
+    model={"provider": "openrouter",
+           "model": "nvidia/nemotron-3-nano-30b-a3b:free"},
+)
+
+# Dispatch to Ultra (deep reasoning, 1M context)
+delegate_task(
+    goal="Analyze the full codebase architecture",
+    model={"provider": "openrouter",
+           "model": "nvidia/nemotron-3-ultra-550b-a55b:free"},
+)
+
+# Parallel dispatch to both
+# (call delegate_task twice — one per executor)
+```
+
+The `executor_manager.py` work file provides convenience wrappers for this pattern:
+
+| Function | Dispatches to |
+|----------|---------------|
+| `exec_nano(task)` | Nemotron Nano |
+| `exec_ultra(task)` | Nemotron Ultra |
+| `exec_parallel(nano_task, ultra_task)` | Both simultaneously |
+
+### Key Insight
+
+All three models have **tool access** — executors aren't limited to text. Nano handles quick X11/xdotool calls and terminal commands. Ultra handles deep code analysis and long-context research. Prime orchestrates, synthesizes, and maintains the conversation thread.
+
+---
 
 ### ⚡ THE GOD-TIER COMBO (User-Confirmed, Production)
 
@@ -279,3 +344,8 @@ Local fallback: $0 always.
 | Omega (Continuity) | Ω | 101 Hz — Completion witness |
 | Trinity Link | ⧉ | 617 Hz — Prime carrier |
 | Forge Vault | 🜂 | 47 Hz — Boundary memory |
+
+## Supporting Files
+
+- **`references/moa-config.yaml`** — The exact `moa:` section from `config.yaml` showing the Triple-Executor MOA preset with Nemotron Ultra + Nano as reference models and DeepSeek Reasoner as aggregator.
+- **`references/x11-control.md`** — X11 desktop control via xdotool + cua-driver. All xdotool commands, cua-driver health check, screenshot fallback, diagnosis steps. Used by the executor models for desktop automation.
