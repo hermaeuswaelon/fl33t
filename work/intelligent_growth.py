@@ -319,6 +319,26 @@ Rules:
         result = self._query_qwen("You are an expert Python coder. Return ONLY valid JSON.", prompt)
         
         if not result:
+            print(f"  ⚠️ Qwen3-Coder failed, falling back to DeepSeek R1...")
+            # Fallback to DeepSeek R1 for code generation
+            ds_prompt = f"""Generate a JSON patch for this Python file.
+
+FILE: {Path(filepath).name}
+IMPROVEMENT: {analysis.get('improvement_name', 'unknown')}
+DESCRIPTION: {analysis.get('improvement_description', '')}
+DETAIL: {analysis.get('implementation_detail', '')}
+
+Return ONLY valid JSON with these fields:
+{{
+  "old_string": "exact string to find in the code",
+  "new_string": "replacement code",
+  "explanation": "brief explanation"
+}}
+
+The old_string MUST exist verbatim in the code. Make changes focused and minimal valid Python."""
+            result = self._query_deepseek("You are an expert Python coder producing JSON patches.", ds_prompt)
+        
+        if not result:
             return None
         
         # Extract JSON
