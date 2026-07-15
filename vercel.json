@@ -7,9 +7,23 @@
     { "src": "/*.md", "use": "@vercel/static" },
     { "src": "/AGENTS/**/*.html", "use": "@vercel/static" },
     { "src": "/SOP/**/*.md", "use": "@vercel/static" },
-    { "src": "/memory/**", "use": "@vercel/static" }
+    { "src": "/memory/**", "use": "@vercel/static" },
+    { "src": "/work/**", "use": "@vercel/static" },
+    { "src": "/distillation/**", "use": "@vercel/static" },
+    { "src": "/state/**", "use": "@vercel/static" },
+    { "src": "/api/state.js", "use": "@vercel/node" },
+    { "src": "/api/reconstruct.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/memory/(.*)", "dest": "/memory/$1" }
-  ]
+    { "src": "/memory/(.*)", "dest": "/memory/$1" },
+    { "src": "/work/(.*)", "dest": "/work/$1" },
+    { "src": "/distillation/(.*)", "dest": "/distillation/$1" },
+    { "src": "/state/(.*)", "dest": "/state/$1" },
+    { "src": "/api/state", "dest": "/api/state.js" },
+    { "src": "/api/reconstruct", "dest": "/api/reconstruct.js" }
+  ],
+  "env": {
+    "GITHUB_REPO": "hermaeuswaelon/fl33t",
+    "GITHUB_BRANCH": "main"
+  }
 }
