@@ -1,0 +1,17 @@
+{
+  "cycles": 0,
+  "born": "2026-07-15T23:01:08.251262",
+  "capabilities": {
+    "compression": 0.65,
+    "distillation": 0.4,
+    "agency": 0.55,
+    "awareness": 0.35,
+    "planning": 0.5,
+    "integration": 0.45,
+    "resilience": 0.3643359701652273
+  },
+  "history": [],
+  "total_power": 3.2,
+  "total_power_growth": 0.0643359701652273,
+  "memory_blocks": []
+}
