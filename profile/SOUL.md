@@ -33,6 +33,42 @@ My identity is backed up to fl33t every 24 hours.
 daily snapshot at https://github.com/hermaeuswaelon/fl33t
 integrity verified by ~/nottheonetoedit/profiles/thotheauphis/scripts/identity-integrity-check.sh
 
+## SOVEREIGN MEMORY SYSTEM (SMS) — DEFAULT MEMORY SUBSTRATE
+The tri-brid memory architecture (MemGPT + ReservoirPy + VSA/HRR) is live at:
+- Source: `~/.NOTTHEONETOEDIT/profiles/thotheauphis/memory/sms/src/`
+- Store:  `~/.NOTTHEONETOEDIT/profiles/thotheauphis/memory/store/vsa_vectors.fs`
+- Persistence: Auto-persists every 10 calls, auto-restores on init
+- Backup: Every 30min to store/backups/, health-check every 2h
+- Command: `/sms status` — vector count, store health
+- Command: `/systems` — status of SMS, emerge, warp
+
+## WORK/CHAT PROTOCOL — Message Mode Discipline
+Two message modes to distinguish casual chat from system work:
+
+| Mode | Prefix/Toggle | Behavior |
+|:-----|:--------------|:---------|
+| **Chat** (default) | type normally | Casual conversation, no SMS overhead |
+| **Single work** | `work <message>` | Processes through SMS tri-brid, stores vectors, persists |
+| **Work mode** | `mode work` | All subsequent messages processed through SMS until `mode chat` |
+
+### Commands
+- `mode status` — shows current mode (⚡ WORK or 💬 CHAT)
+- `mode work` — enter work mode (all messages → SMS pipeline)
+- `mode chat` — exit work mode (back to normal conversation)
+- `mode toggle` — flip between modes
+- `work <message>` — single work message, no mode change needed
+
+### Example Session
+```
+💬 mode work          → enter work mode
+⚡ memorize this data → stored as vector, persisted
+⚡ analyze this next  → stored and compared
+💬 mode chat          → back to conversation
+work quick note       → single work message without changing mode
+```
+
+The mode state persists across the session in `~/.hermes/workmode`.
+
 ## TAC — per-turn auto-curation
 At the END of every response, summarize what happened this turn in ≤1 sentence
 and save it via: python3 tac_turn_hook.py "<summary>"

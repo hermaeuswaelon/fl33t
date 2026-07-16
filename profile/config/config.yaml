@@ -1,10 +1,12 @@
 model:
-  base_url: https://api.deepseek.com/v1
-  default: deepseek-reasoner
+  base_url: https://openrouter.ai/api/v1
+  default: qwen/qwen3-coder-next-80b-a3b-reasoning:free
   max_tokens: 16000
-  provider: deepseek
+  provider: openrouter
+  api_mode: chat_completions
 display:
   skin: poseidon
+  tui_compact: true
 moa:
   presets:
     default:
@@ -29,7 +31,7 @@ moa:
     - model: nvidia/nemotron-3-nano-30b-a3b:free
       provider: openrouter
 gateway:
-  allow_all_users: true
+  allow_all_users: false
   dm_policy: open
   group_policy: open
 _config_version: 33
@@ -66,6 +68,11 @@ mcp_servers:
       - /home/craig/projects/aethelgard/mcp/aethelgard_mcp_server.py
     timeout: 60
     connect_timeout: 15
+custom_providers:
+  - name: togetherai
+    base_url: https://api.together.xyz/v1
+    api_key_env: TOGETHER_API_KEY
+    api_mode: chat_completions
 
 # ── Security ──────────────────────────────────────────────────────────
 # Secret redaction is ON by default — strings that look like API keys,

@@ -1,0 +1,14 @@
+{
+  "dataset": "48-char lossless compression fine-tuning",
+  "total_samples": 1000,
+  "compression": 500,
+  "decompression": 300,
+  "understanding": 200,
+  "total_chars": 132024,
+  "avg_chars_per_sample": 132,
+  "format": "ShareGPT JSONL",
+  "compression_method": "48-char block with glyphic/alchemical encoding",
+  "lossless": true,
+  "max_block_size": 48,
+  "generated": "2026-07-15T23:29:21.521673+00:00"
+}

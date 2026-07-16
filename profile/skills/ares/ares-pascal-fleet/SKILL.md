@@ -131,6 +131,26 @@ LD_LIBRARY_PATH=/home/craig/CEF4Delphi/cef_binary_current/Release DISPLAY=:0 \
 /home/craig/projects/aethelgard/fleet/pascal/<tool_path>/<binary>
 ```
 
+## Pascal Source Readability (Lens)
+
+FreePascal / Object Pascal syntax (`begin/end`, `:=`, `.lpr`/`.pas`) is opaque to most AIs. Use `work/pascal_lens.py` to convert Pascal source into AI-readable pseudo-code:
+
+```bash
+# Analyze structure
+python3 pascal_lens.py source.pas --analyze
+
+# Convert to annotated pseudo-code
+python3 pascal_lens.py source.pas --full
+
+# Convert entire directory
+python3 pascal_lens.py --dir /path/to/pas/ --analyze
+
+# CEF4Delphi type reference
+python3 pascal_lens.py --explain-types
+```
+
+The lens preserves all logic, types, and structure while translating to C-style syntax. It also documents CEF4Delphi-specific types (`TCefApplication`, `GlobalCEFApp`, `AddCustomCommandLine`, etc.). See `references/pascal-lens.md` for the full type dictionary and usage patterns.
+
 ## Execution Rules
 
 - GUI tools (Dual Citizen browser) need `DISPLAY=:0` and `LD_LIBRARY_PATH` set

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-15T16:03:04.192439",
+  "updated_at": "2026-07-16T08:56:02.380433",
   "platforms": {
     "discord": [
       {
@@ -129,7 +129,14 @@
         "type": "channel"
       }
     ],
-    "telegram": [],
+    "telegram": [
+      {
+        "id": "8629277606",
+        "name": "Veyron Logos",
+        "type": "dm",
+        "thread_id": null
+      }
+    ],
     "email": []
   }
 }

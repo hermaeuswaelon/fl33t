@@ -40,6 +40,36 @@ This is the **currently deployed** executor architecture. Three models working t
 
 **Total API cost: $0/month for executors.** Both Nemotron models are OpenRouter free tier. DeepSeek Reasoner is the only paid model at $0.55/M input tokens.
 
+## TogetherAI as Custom Provider (Added July 2026)
+
+TogetherAI is now registered as a **custom provider** in the thotheauphis profile alongside the OpenRouter MOA setup:
+
+```yaml
+custom_providers:
+  - name: togetherai
+    base_url: https://api.together.xyz/v1
+    api_key_env: TOGETHER_API_KEY
+    api_mode: chat_completions
+```
+
+**API key:** `TOGETHER_API_KEY` set in `~/.hermes/profiles/thotheauphis/.env` (key: `tgp_v1_jkKWKWdAMMes...`)
+
+**How to use TogetherAI:**
+```bash
+# Interactive model picker (run in real terminal)
+hermes model --refresh
+
+# Direct invocation
+hermes chat --provider togetherai -m meta-llama/Llama-3.3-70B-Instruct-Turbo
+
+# Add as fallback when OpenRouter rate-limits
+hermes fallback add    # then select togetherai from provider picker
+```
+
+**Why this works:** TogetherAI is in the Hermes curated model list (`hermes_cli/models.py`) despite having no plugin directory. The `custom_providers` config section is the correct way to register such providers. See `multi-model-executor-architecture` skill's `references/adding-providers-via-custom-providers.md` for the full pattern.
+
+**Full OpenRouter model list:** The cache at `~/.hermes/profiles/thotheauphis/cache/openrouter_model_metadata.json` contains metadata for 1000+ models. To refresh: run `hermes model --refresh` interactively, which fetches the live catalog from `https://openrouter.ai/api/v1/models`.
+
 ## MOA Config
 
 The live configuration in `config.yaml`:
@@ -92,12 +122,13 @@ The single largest token sink in the system is the **skills index** — ~5,147 t
 
 ## Scripts Status (July 2026)
 
-The Python scripts in `scripts/` (`ares-offload.py`, `ares-continuity.py`, etc.) were written for the old TogetherAI architecture. They are **NOT currently wired into the live MOA setup**. The active executor system is:
-- MOA configuration in `config.yaml` (Hermes-native)
-- `work/executor_manager.py` tool (dispatches via delegate_task with model override)
-- `work/x11_tool.py` (X11 desktop control via xdotool)
+The Python scripts in `scripts/` (`ares-offload.py`, `ares-continuity.py`, etc.) were written for the original TogetherAI direct-offload architecture. They are **NOT the active executor path**. The live system uses:
+- **MOA configuration** in `config.yaml` (Hermes-native) — executors via OpenRouter free tier
+- **`work/executor_manager.py`** — dispatches via `delegate_task` with model override
+- **`work/x11_tool.py`** — X11 desktop control via xdotool
+- **`custom_providers`** in config — TogetherAI registered as a custom provider for direct use and fallback
 
-**Do not attempt to use the old TogetherAI scripts unless re-activating that path.**
+The old scripts remain for reference but should not be assumed active without re-verification.
 
 ## Reference Documents
 

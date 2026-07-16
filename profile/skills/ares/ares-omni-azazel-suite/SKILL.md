@@ -1,11 +1,11 @@
 ---
 name: ares-omni-azazel-suite
 description: "ARES OmniVision + Azazel Social Suite — Nemotron Omni (vision) + Dual Citizen browser + Glyph Language CLI + social media content pipeline. Integrates with Azazel/Lilith Beaux project for sovereign digital influence."
-version: 1.0.0
+version: 1.1.0
 author: Craig / ARES-WITNESS-PRIME
 platforms: [linux]
-tags: [ares, omni, vision, azazel, social, glyph, browser, lilith-beaux]
-related_skills: [ares-dual-citizen-browser, ares-nemotron-together-dual-offload, ares-pascal-fleet, ares-aethelgard-project]
+tags: [ares, omni, vision, azazel, social, glyph, browser, lilith-beaux, craigslist, reddit, linkedin]
+related_skills: [ares-dual-citizen-browser, ares-nemotron-together-dual-offload, ares-pascal-fleet, ares-aethelgard-project, ares-browser-research]
 ---
 
 # ⟁ ARES OmniVision + Azazel Social Suite
@@ -102,6 +102,49 @@ The Dual Citizen browser is currently **RUNNING** with:
 - CEF Engine: Chromium 131.0.6778
 - Tabs: 2 (active: 2)
 - Watchdog: Enabled (systemd user service)
+
+## Browser-Based Social Automation (via Bromium)
+
+Use Bromium (the CEF4Delphi Chromium browser) to automate social media platforms that block headless browsers or AI agents — Bromium appears as a genuine Chromium 131 with extensions, cookies, and persistent profiles.
+
+| Platform | Capability | Method |
+|----------|-----------|--------|
+| **Reddit** | Search profiles (Lilith Beaux targeting), make posts, scrape subreddits | Browser navigation + JS injection |
+| **Craigslist** | Bulk scrape gigs/listings across multiple cities, auto-apply | Multi-city batch navigation + DOM extraction |
+| **LinkedIn** | Profile research, job search, people search | Browser navigation (use Spoof Geolocation extension) |
+| **Freepascal.com** | Scrape documentation/reference | Direct navigation + text extraction |
+| **Facebook/Instagram** | Profile research, content analysis | Requires logged-in session (persisted in profile) |
+
+Full reference with code examples: [`references/browser-social-automation.md`](references/browser-social-automation.md)
+
+### Quickstart: Bulk Craigslist Scrape
+
+```bash
+# Navigate to a city's gigs page
+python3 /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/bromium_bridge.py \
+  navigate "https://sfbay.craigslist.org/d/gigs/search/ggg"
+
+# Extract all listings
+python3 /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/bromium_bridge.py js "
+  JSON.stringify(Array.from(document.querySelectorAll('.result-row')).map(r => ({
+    title: r.querySelector('.result-title')?.textContent?.trim(),
+    url: r.querySelector('.result-title')?.href,
+    price: r.querySelector('.result-price')?.textContent?.trim()
+  })))
+"
+```
+
+### Quickstart: Reddit Profile Research
+
+```bash
+python3 /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/bromium_bridge.py \
+  navigate "https://www.reddit.com/user/SomeTargetUser"
+python3 /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/bromium_bridge.py text
+```
+
+## Reference Files
+
+- [`references/browser-social-automation.md`](references/browser-social-automation.md) — Full automation patterns for Reddit, Craigslist, LinkedIn, Freepascal, and Facebook — including bulk scraping code, auto-apply strategies, and Lilith Beaux targeting workflows
 
 ## Content Workflow
 

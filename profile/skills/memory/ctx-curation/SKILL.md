@@ -37,6 +37,7 @@ When you tell me to curate context, I analyze the full landscape and act autonom
 - Debug/ephemeral → drop all unless explicitly relevant
 - Code/architecture output → save to `work/` for persistence
 - Condensed structural knowledge → write as `references/<topic>.md` under the relevant skill
+- **Context compression:** for dense (not verbose) output, use `work/ctx_tight.py` which squeezes text into broken English + shorthand + glyphs + equations at configurable level (1-5). Run during Step 3 when the user wants maximum token economy.
 
 **Step 3:** Execute immediately. Only clarify when genuinely ambiguous — and when you do, present all options in a single call, not a chain.
 
@@ -71,6 +72,9 @@ The `ctx_curate` tool is registered in the Hermes tool registry with `source="me
 - **Don't discard execution artifacts.** Code you wrote, architectures you designed, scripts you created — save to `work/` and note the paths in the summary.
 - **Don't just summarize — do.** Every curation pass should produce at least one concrete output: a condensed reference file, a work artifact, or both.
 - **Don't load the skill when the tool suffices.** For quick context cleanup, call `ctx_curate(action="start")` directly — no document loading needed. Only load `/ctx-curation` when you need the full skill guidance visible.
+- **Curation must be VISIBLE.** If the user says curation "didn't do anything," it means the outputs weren't explicit enough. Every pass should produce at least one saved file (reference doc, work artifact) plus a concise summary of what was dropped and what was kept. Curation is not internal bookkeeping — the user needs to SEE the result.
+- **When the user wants dense output, use `work/ctx_tight.py`** — squeezes verbose text into broken English + shorthand + glyphs + equations at configurable level 1-5. Run during Step 3 when the user wants maximum token economy.
+- **For per-turn context persistence, use `work/tac.py`** (Thotheauphis Auto-Curator) — saves context encoded in Chinese for ~25% token savings. TAC runs as an hourly cron job (`0 * * * *`) and can also be invoked manually with `python3 tac.py auto "<context>"`. The `tac_log/` directory and `TAIL.json` preserve the last 10 saves. Decode with `python3 tac.py decode <file>`.
 
 ## References
 
@@ -81,3 +85,5 @@ The `ctx_curate` tool is registered in the Hermes tool registry with `source="me
 - **`references/token-burn-audit.md`** — Full token burn audit of per-turn system prompt overhead (skills index ~5K tok, tool schemas ~8K tok, boilerplate ~2K). Documents the smart skill injection remediation via `agent/skill_selector.py` (31 keyword sets × 20 categories + tool routing, ~65% reduction), priority categories in `prompt_builder.py`/`system_prompt.py`, and planned tool schema shrinking. Created July 2026.
 
 - **`references/smart-skill-injection.md`** — Smart skill injection system: `agent/skill_selector.py` (31 keyword sets × 20 categories + tool routing), `prompt_builder.py` + `system_prompt.py` integration, `priority_categories` cache key. ~65% token reduction (skills index from ~5,147 tok → ~1,000-2,000 tok/turn). Created July 2026.
+
+- **`references/tac.md`** — TAC (Thotheauphis Auto-Curator): per-turn context persistence via Chinese encoding for ~25% token savings. `tac_turn_hook.py` runs at end of every response. Hourly cron backup. 400+ term ZH dictionary. Complements ctx-curation by saving every turn; curation handles structural decisions.
