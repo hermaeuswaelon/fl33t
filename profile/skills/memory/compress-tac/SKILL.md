@@ -74,7 +74,7 @@ Auto-compression is live via cron:
 | **Context estimation** | Estimates from session dump size (~108K tokens observed). RTACC state updated each run. |
 | **Output** | Timestamped `.block` files in `tac_log/` with Chinese working-context summary |
 
-Cron details: `cronjob(action='list')` to inspect. Job ID `b7798d50a076`.
+Cron details: `cronjob(action='list')` to inspect. Job IDs: `b7798d50a076` (auto-tac-compress, `*/30`), `84b387e39c9d` (TAC curation, hourly). Both job IDs shown below under TAC Cron Jobs.
 
 ## Manual Invocation
 
@@ -83,3 +83,40 @@ When `/compress-tac` is invoked manually OR you detect context approaching limit
 ## Setup
 
 No files required. Output directory: `work/tac_log/` is auto-created.
+
+## Known Issues (Fixed 2026-07-16)
+
+Both TAC cron jobs were erroring with "Script not found":
+
+| Job ID | Name | Schedule | Error |
+|--------|------|----------|-------|
+| `84b387e39c9d` | TAC auto-curation | `0 * * * *` (hourly) | Script not found: tac-curation.sh |
+| `b7798d50a076` | auto-tac-compress | `*/30 * * * *` | Script not found: auto-tac-compress.py |
+
+Root cause: scripts were in `~/work/` but cron expected them in `~/scripts/`. Fixed by symlinking:
+
+```bash
+ln -sf ~/.NOTTHEONETOEDIT/profiles/thotheauphis/work/auto-tac-compress.py \
+       ~/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/
+ln -sf ~/.NOTTHEONETOEDIT/scripts/tac-curation.sh \
+       ~/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/
+```
+
+Verified: `auto-tac-compress.py` runs cleanly (7509 → ~149 token compression per block).
+Next cron runs will succeed automatically.
+
+## Quick Fix Checklist
+
+If any TAC cron job errors with "Script not found":
+```bash
+# Check script exists
+ls ~/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/auto-tac-compress.py
+
+# Recreate symlink if missing
+ln -sf ~/.NOTTHEONETOEDIT/profiles/thotheauphis/work/auto-tac-compress.py \
+       ~/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/
+
+# Test manually  
+python3 ~/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/auto-tac-compress.py
+# Should produce: [TAC] Compressed block saved: tac_<timestamp>.block
+```

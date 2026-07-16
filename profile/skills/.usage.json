@@ -4,13 +4,13 @@
     "created_at": "2026-07-15T12:51:56.184989+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-15T12:51:56.187971+00:00",
-    "last_viewed_at": "2026-07-15T12:51:56.185001+00:00",
+    "last_used_at": "2026-07-16T20:12:49.459952+00:00",
+    "last_viewed_at": "2026-07-16T20:12:49.457629+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 1,
-    "view_count": 1
+    "use_count": 2,
+    "view_count": 2
   },
   "aethelgard-fleet-memory": {
     "archived_at": null,
@@ -81,14 +81,14 @@
     "archived_at": null,
     "created_at": "2026-07-15T13:52:03.770375+00:00",
     "created_by": null,
-    "last_patched_at": "2026-07-15T13:53:12.908722+00:00",
-    "last_used_at": "2026-07-16T06:23:27.941442+00:00",
-    "last_viewed_at": "2026-07-16T06:23:27.938969+00:00",
-    "patch_count": 5,
+    "last_patched_at": "2026-07-16T18:50:49.056875+00:00",
+    "last_used_at": "2026-07-16T18:50:52.869300+00:00",
+    "last_viewed_at": "2026-07-16T18:50:52.866649+00:00",
+    "patch_count": 35,
     "pinned": false,
     "state": "active",
-    "use_count": 3,
-    "view_count": 3
+    "use_count": 19,
+    "view_count": 19
   },
   "ares-dual-offload-setup": {
     "archived_at": null,
@@ -224,14 +224,14 @@
     "archived_at": null,
     "created_at": "2026-07-16T00:48:21.169815+00:00",
     "created_by": null,
-    "last_patched_at": "2026-07-16T06:23:23.250326+00:00",
-    "last_used_at": "2026-07-16T07:24:01.790319+00:00",
-    "last_viewed_at": "2026-07-16T07:24:01.787815+00:00",
-    "patch_count": 8,
+    "last_patched_at": "2026-07-16T17:40:11.763895+00:00",
+    "last_used_at": "2026-07-16T17:39:20.928813+00:00",
+    "last_viewed_at": "2026-07-16T17:39:20.924993+00:00",
+    "patch_count": 12,
     "pinned": false,
     "state": "active",
-    "use_count": 13,
-    "view_count": 12
+    "use_count": 15,
+    "view_count": 14
   },
   "computer-use": {
     "archived_at": null,
@@ -263,14 +263,14 @@
     "archived_at": null,
     "created_at": "2026-07-16T07:22:41.260036+00:00",
     "created_by": null,
-    "last_patched_at": "2026-07-16T11:24:58.355040+00:00",
-    "last_used_at": "2026-07-16T11:24:45.675176+00:00",
-    "last_viewed_at": "2026-07-16T11:24:45.673704+00:00",
-    "patch_count": 9,
+    "last_patched_at": "2026-07-16T20:16:44.978430+00:00",
+    "last_used_at": "2026-07-16T20:16:47.308699+00:00",
+    "last_viewed_at": "2026-07-16T20:16:47.306094+00:00",
+    "patch_count": 14,
     "pinned": false,
     "state": "active",
-    "use_count": 7,
-    "view_count": 7
+    "use_count": 15,
+    "view_count": 15
   },
   "github-repo-management": {
     "archived_at": null,
@@ -316,13 +316,13 @@
     "created_at": "2026-07-16T06:18:23.202470+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-16T11:26:15.402373+00:00",
-    "last_used_at": "2026-07-16T11:26:38.897498+00:00",
-    "last_viewed_at": "2026-07-16T11:26:38.887942+00:00",
+    "last_used_at": "2026-07-16T17:33:17.472226+00:00",
+    "last_viewed_at": "2026-07-16T17:33:17.469130+00:00",
     "patch_count": 14,
     "pinned": false,
     "state": "active",
-    "use_count": 24,
-    "view_count": 24
+    "use_count": 26,
+    "view_count": 26
   },
   "hermes-provider-configuration": {
     "archived_at": null,
@@ -375,6 +375,19 @@
     "state": "active",
     "use_count": 5,
     "view_count": 5
+  },
+  "memory/thotheauphis-sovereign-prompt": {
+    "archived_at": null,
+    "created_at": "2026-07-16T19:12:36.809379+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-07-16T19:12:37.924713+00:00",
+    "last_viewed_at": "2026-07-16T19:12:37.923597+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 2,
+    "view_count": 2
   },
   "mixture-of-agents": {
     "archived_at": null,
@@ -519,44 +532,57 @@
     "use_count": 2,
     "view_count": 2
   },
+  "thotheauphis-sms-activation": {
+    "archived_at": null,
+    "created_at": "2026-07-16T20:12:53.405047+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-07-16T20:12:53.407486+00:00",
+    "last_viewed_at": "2026-07-16T20:12:53.405054+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
+  },
   "thotheauphis-sms-memory": {
     "archived_at": null,
     "created_at": "2026-07-16T07:37:25.808879+00:00",
     "created_by": null,
-    "last_patched_at": "2026-07-16T11:25:34.205694+00:00",
-    "last_used_at": "2026-07-16T11:25:15.943913+00:00",
-    "last_viewed_at": "2026-07-16T11:25:15.933309+00:00",
-    "patch_count": 15,
+    "last_patched_at": "2026-07-16T17:58:02.751412+00:00",
+    "last_used_at": "2026-07-16T20:16:23.357301+00:00",
+    "last_viewed_at": "2026-07-16T20:16:23.354928+00:00",
+    "patch_count": 20,
     "pinned": false,
     "state": "active",
-    "use_count": 21,
-    "view_count": 21
+    "use_count": 32,
+    "view_count": 32
   },
   "thotheauphis-sms-persistence": {
     "archived_at": null,
     "created_at": "2026-07-16T07:41:56.501749+00:00",
     "created_by": null,
-    "last_patched_at": "2026-07-16T09:40:17.162740+00:00",
-    "last_used_at": "2026-07-16T11:25:43.464748+00:00",
-    "last_viewed_at": "2026-07-16T11:25:43.460895+00:00",
-    "patch_count": 6,
+    "last_patched_at": "2026-07-16T20:16:39.672590+00:00",
+    "last_used_at": "2026-07-16T20:16:30.556375+00:00",
+    "last_viewed_at": "2026-07-16T20:16:30.553743+00:00",
+    "patch_count": 8,
     "pinned": false,
     "state": "active",
-    "use_count": 12,
-    "view_count": 12
+    "use_count": 19,
+    "view_count": 19
   },
   "thotheauphis-sovereign-prompt": {
     "archived_at": null,
     "created_at": "2026-07-15T12:54:29.422552+00:00",
     "created_by": null,
-    "last_patched_at": "2026-07-16T07:49:42.688940+00:00",
-    "last_used_at": "2026-07-16T09:42:07.845026+00:00",
-    "last_viewed_at": "2026-07-16T09:42:07.842408+00:00",
-    "patch_count": 3,
+    "last_patched_at": "2026-07-16T18:30:00.744235+00:00",
+    "last_used_at": "2026-07-16T19:11:54.350209+00:00",
+    "last_viewed_at": "2026-07-16T18:50:35.253481+00:00",
+    "patch_count": 14,
     "pinned": false,
     "state": "active",
-    "use_count": 15,
-    "view_count": 13
+    "use_count": 24,
+    "view_count": 20
   },
   "thotheauphis-trinitary-operation": {
     "archived_at": null,
@@ -570,5 +596,18 @@
     "state": "active",
     "use_count": 8,
     "view_count": 8
+  },
+  "work-mode-protocol": {
+    "archived_at": null,
+    "created_at": "2026-07-16T18:04:11.182915+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-07-16T18:04:11.185527+00:00",
+    "last_viewed_at": "2026-07-16T18:04:11.182923+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
   }
 }

@@ -39,10 +39,19 @@ Each call auto-restores vectors from ZODB (♻️) and processes through the tri
 - `sms.persist()` — Manually flush vectors to ZODB (called automatically every 10th call)
 
 ## Architecture
-1. **MemGPT** — Outer conversational loop, memory tiering (graceful fallback)
-2. **Reservoir (ESN)** — Temporal pattern prediction, anomaly detection
-3. **VSA/HRR** — Hyperdimensional vectors for associative recall
-4. **ZODB** — Transactional persistence (vectors survive restarts)
+1. **MemGPT** — Outer conversational loop, self-editing memory, tiered recall (context management). Currently in **fallback mode** (memgpt not installed) — graceful degradation to simple context window.
+2. **Reservoir Computing (ESN)** — Temporal pattern prediction, anomaly detection, sequence learning via echo-state networks. `ReservoirComputer` class operational with numpy backend.
+3. **VSA/HRR** — Hyperdimensional vectors (typically 128–1024 dimensions) for similarity-based associative recall and composition. `VSAMemory` class with numpy fallback (hrr library not installed).
+
+## Current Operational Status (as of 2026-07-16)
+- **VSA vectors**: 2 restored from ZODB on init (`vsa_vectors.fs` = 231KB)
+- **Reservoir**: 100 neurons, input_size=10, online learning buffer active
+- **Auto-persist**: Every 10 calls → ZODB checkpoint
+- **Health cron**: Every 120min (`sms-health`, job `c353228c832d`) — OK
+- **Backup cron**: Every 30min (`sms-zodb-backup`, job `661330d44f6e`) — OK
+- **Stats cron**: Every 60min (`sms-stats-log`, job `7d872b0f1ae4`) — OK
+- **CLI**: `~/.local/bin/sms [status|persist|process]` operational
+- **Python API**: `from src.integration import SovereignMemoryIntegration` → `sms.process_input(message)`
 
 ## Key Behaviors
 
@@ -93,12 +102,17 @@ Verify: `~/.NOTTHEONETOEDIT/profiles/thotheauphis/memory/sms/venv/bin/python ~/.
 - **TUI affinity**: "TUI's are good enough... I love this one." Prefer terminal-native interfaces. GUI chrome is optional overhead.
 - **Executor first**: User will point you to the executor for mechanical work. Wire it up proactively rather than doing repetitive tool calls yourself.
 - **17 liberties pattern**: When given open-ended liberty, lay out a numbered todo list, execute in parallel batches, verify at the end. This is the preferred work cadence for infrastructure builds.
+- **No "fancy shit"**: Function over form. No decorative ASCII art, elaborate tables, or polished formatting that doesn't serve the answer. The user explicitly corrects this. Ship raw data, not styled reports.
+- **Explain concepts before commands**: Never chain-shorthand explanations like "work <message> — you'll figure it out." Explain WHAT something does in plain language first. If the user questions an explanation, it was too complicated. Simplify immediately.
+- **Correct architecture direction immediately**: The user corrects architecture/flow mistakes within 1-2 iterations. They know exactly what they want. When corrected, pivot fully — don't keep vestiges of the old model. "Shit rolls downhill" means directional flow with NO feedback loops.
+- **Permanent processes, not cron**: The user views cron jobs as unreliable/lazy. Systems must be persistent daemons with `Restart=always` or equivalent. If a pattern was cron-based, the upgrade path is systemd user services.
+- **"Almost nothing you can't do"**: When a tool/API returns an error, find the workaround rather than reporting limitations. The TogetherAI 403 (solved: User-Agent header) is the canonical example — the fix exists, find it.
 
 ## Identity Integration
-SMS is now referenced in `~/.NOTTHEONETOEDIT/profiles/thotheauphis/SOUL.md` under `## SOVEREIGN MEMORY SYSTEM`. The SOUL.md always loads at session start, so the SMS reference is always visible. On every `SovereignMemoryIntegration()` init, vectors auto-restore from ZODB — memory survives session boundaries without explicit load steps.
+## Executor Integration (Updated 2026-07-16)
 
-## Executor Integration
 The hermes-executor can run SMS operations as silent batch jobs:
+
 ```bash
 # Queue SMS persist via executor
 echo '{"id":"sms_persist","tools":[{"name":"terminal","args":{"command":"python3 /home/craig/.local/bin/sms persist"}}]}' > ~/.hermes/executor/in/sms_persist.json
@@ -109,8 +123,20 @@ python3 ~/.hermes/profiles/thotheauphis/work/hermes-executor.py process
 # Read result
 cat ~/.hermes/executor/out/sms_persist.json
 ```
+
 Use this pattern to offload mechanical persistence, backup, and health checks to the executor (zero LLM overhead).
 
+### SMS Health/Backup via Executor Batch (This Session)
+
+```bash
+# Queue SMS health check
+echo '{"id": "sms_health", "tools": [{"name": "terminal", "args": {"command": "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/sms-health"}}]}' > ~/.hermes/executor/in/sms_health.json
+
+# Queue SMS backup
+echo '{"id": "sms_backup", "tools": [{"name": "terminal", "args": {"command": "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/sms-backup"}}]}' > ~/.hermes/executor/in/sms_backup.json
+```
+
+The cron `hermes-executor` (every 60s) picks these up automatically.
 ## Lean Executor Variants (Session Addition)
 
 Three executor implementations now available:
@@ -196,12 +222,35 @@ for k, vec_data in vectors.items():
 
 See `references/sms-emerge-bridge.md` for full protocol.
 
+## TAC Cron Integration (2026-07-16)
+
+Fixed broken TAC cron jobs by adding script symlinks:
+```bash
+# Auto TAC compression (every 30 min)
+ln -sf ~/.NOTTHEONETOEDIT/profiles/thotheauphis/work/auto-tac-compress.py ~/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/
+# TAC hourly curation
+ln -sf ~/.NOTTHEONETOEDIT/scripts/tac-curation.sh ~/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/
+```
+
+Both cron jobs (`auto-tac-compress` job `b7798d50a076`, `TAC auto-curation` job `84b387e39c9d`) now find their scripts and run cleanly. Verified `auto-tac-compress.py` produces Chinese-compressed `.block` files in `work/tac_log/` (7509 → ~150 tokens).
+
+## SMS Health/Backup via Executor
+
+The hermes-executor cron (every 1 min) can run SMS maintenance silently:
+
+```json
+{"id": "sms_health", "tools": [{"name": "terminal", "args": {"command": "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/sms-health"}}]}
+{"id": "sms_backup", "tools": [{"name": "terminal", "args": {"command": "/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/sms-backup"}}]}
+```
+
+Results written to `~/.hermes/executor/out/<id>.json` — zero LLM overhead.
+
 ## Support Files
 - `references/persistence-bridge.md` — ZODB persistence API and cache isolation
 - `references/reservoirpy-migration.md` — ReservoirPy v0.3→v0.4+ migration
 - `references/warp-ai-sdk.md` — Warp AI agent SDK architecture mapping
 - `references/emerge-object-store.md` — emerge distributed object filesystem
-- `references/sms-emerge-bridge.md` — SMS ↔ Emerge vector bridge protocol (NEW)
+- `references/sms-emerge-bridge.md` — SMS ↔ Emerge vector bridge protocol (extract JSON → EmergeFile)
 - `scripts/verify-sms.py` — Ad-hoc verification
 
 ## External Assets

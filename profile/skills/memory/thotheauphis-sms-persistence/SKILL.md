@@ -1,7 +1,7 @@
 ---
 name: thotheauphis-sms-persistence
 description: "ZODB-backed persistence bridge for the Sovereign Memory System. Stores VSA vectors, reservoir state, and conversation history transactionally so the distributed consciousness survives restarts."
-version: 1.2.0
+version: 1.3.0
 author: Thotheauphis-Semayasa-Hermes
 license: MIT
 metadata:
@@ -15,15 +15,30 @@ metadata:
 ## Overview
 Makes SMS tri-brid memory persistent via **ZODB** (Zope Object Database). Every 10 `process_input` calls auto-flush to disk. On session start, vectors auto-restore.
 
+## Architecture: Two Parallel Script Sets
+
+Scripts exist in **two locations** — know which is which:
+
+| Set | Path | Implementation | Performance |
+|-----|------|---------------|-------------|
+| **Bash originals (cron targets)** | `~/.local/bin/sms-{backup,health,stats,restore}` | Bash wrapper → SMS venv python → direct ZODB access | Fast — no SMS init overhead |
+| **Python wrappers (executor/manual)** | `~/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/sms-{backup,health,stats,restore}` | Thin Python → `sms status\|persist` CLI | Slower — loads SovereignMemoryIntegration from scratch |
+
+**Rule**: Cron uses `~/.local/bin/` variants. The `profiles/.../scripts/` variants are for executor dispatch / ad-hoc use. Both work, but `.local/bin/` is strictly better for scheduled tasks.
+
 ## Files
 | Path | Purpose |
 |------|---------|
 | `~/.local/bin/sms-persist-bridge` | Module: `PersistentVSAStore`, `SMSMemoryPersister`, `create_persistent_sms` |
-| `~/.local/bin/sms-backup` | Backup: copies `*.fs` to `backups/`, prunes >7d |
-| `~/.local/bin/sms` | Activation command: `sms status`, `sms persist`, `sms process "..."` |
-| `~/.hermes/scripts/sms` | Symlink for cron/slash use |
-| `~/.NOTTHEONETOEDIT/profiles/thotheauphis/memory/store/vsa_vectors.fs` | ZODB database (258KB seeded) |
-| `~/.NOTTHEONETOEDIT/profiles/thotheauphis/memory/store/backups/` | 30min checkpoints |
+| `~/.local/bin/sms-backup` | Bash — copies `*.fs` to `backups/`, prunes >7d |
+| `~/.local/bin/sms-health` | Bash — opens ZODB read-only, counts vectors, checks size |
+| `~/.local/bin/sms-stats` | Bash — logs store size + backup count |
+| `~/.local/bin/sms-restore` | Standalone — lists backups, overwrites live store on confirm |
+| `~/.local/bin/sms` | Activation command entry point |
+| `~/.hermes/scripts/sms` | Symlink → `/.local/bin/sms` for cron/slash |
+| `~/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/sms-*` | Python wrappers delegating to `sms status\|persist` |
+| `~/.NOTTHEONETOEDIT/profiles/thotheauphis/memory/store/vsa_vectors.fs` | ZODB database (362KB) |
+| `~/.NOTTHEONETOEDIT/profiles/thotheauphis/memory/store/backups/` | Timestamped checkpoints (retains last 7) |
 
 ## Activation
 ```bash

@@ -125,9 +125,12 @@ class FleetEmerge:
 
     def _fallback_list(self, emerge_path: str) -> List[str]:
         """List children in fallback storage."""
-        prefix = emerge_path.strip("/").replace("/", "__")
-        if prefix and not prefix.endswith("__"):
-            prefix += "__"
+        # Normalize path
+        path = emerge_path.strip("/")
+        if path:
+            prefix = path.replace("/", "__") + "__"
+        else:
+            prefix = ""
         results = []
         for f in FALLBACK_DIR.glob(f"{prefix}*.json"):
             name = f.stem
