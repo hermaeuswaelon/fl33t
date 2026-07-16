@@ -170,48 +170,77 @@ def extension_bridge_init(tab_id: int = 1) -> Dict:
 
 
 def deepresearch(query: str, model: str = "deepseek-chat") -> Dict:
-    """Use Bromium + BetterDeepSeek to research a query on chat.deepseek.com."""
+    """Use Bromium to research a query on chat.deepseek.com."""
     # 1. Navigate to DeepSeek chat
-    nav = navigate("https://chat.deepseek.com")
-    time.sleep(3)
+    navigate("https://chat.deepseek.com")
+    time.sleep(5)
     
     # 2. Init extension bridge
     extension_bridge_init()
     
-    # 3. Type the query into the input area
+    # 3. Type query into the input
     type_js = f"""
-    (() => {{
-      const input = document.querySelector('textarea, [contenteditable="true"], #prompt-textarea');
-      if (!input) return {{error: 'No input found'}};
-      
-      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-        window.HTMLTextAreaElement.prototype, 'value'
-      ).set;
-      nativeInputValueSetter.call(input, {json.dumps(query)});
-      
-      input.dispatchEvent(new Event('input', {{bubbles: true}}));
-      input.dispatchEvent(new Event('change', {{bubbles: true}}));
-      
-      return {{status: 'typed', len: {len(query)}}};
-    }})();
+    const input = document.querySelector('textarea, [contenteditable="true"], #prompt-textarea');
+    if (!input) return {{error: 'No input', html: document.body.innerHTML.slice(0,500)}};
+    const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value');
+    if (nativeSetter) nativeSetter.set.call(input, {json.dumps(query)});
+    else input.innerText = {json.dumps(query)};
+    input.dispatchEvent(new Event('input', {{bubbles: true}}));
+    return {{typed: true, len: {len(query)}}};
     """
     execute_js(type_js)
     time.sleep(1)
     
-    # 4. Click send button or press Enter
+    # 4. Click send
     send_js = """
-    (() => {
-      const btn = document.querySelector('button[type="submit"], [data-testid="send-button"], .send-button');
-      if (btn) { btn.click(); return {method: 'button'}; }
-      
-      const enter = new KeyboardEvent('keydown', {key: 'Enter', code: 'Enter', bubbles: true});
-      document.querySelector('textarea')?.dispatchEvent(enter);
-      return {method: 'enter'};
-    })();
+    const btn = document.querySelector('button[type="submit"], [data-testid="send-button"], .send-btn, .btn-primary');
+    if (btn) { btn.click(); return {method:'button'}; }
+    const enter = new KeyboardEvent('keydown', {key:'Enter', code:'Enter', bubbles:true});
+    document.querySelector('textarea')?.dispatchEvent(enter);
+    return {method:'enter'};
     """
     execute_js(send_js)
     
-    return {"status": "submitted", "query": query}
+    # 5. Poll for response (up to 60s)
+    extract_js = """
+    (() => {
+      for (let wait = 0; wait < 30; wait++) {
+        // Try multiple selectors for DeepSeek's response
+        const selectors = [
+          '[class*="message"]:last-child [class*="content"]',
+          '[class*="answer"]',
+          '[class*="response"]',
+          '.ds-markdown',
+          '[class*="final"]',
+        ];
+        for (const sel of selectors) {
+          const el = document.querySelector(sel);
+          if (el && el.innerText.trim().length > 50) {
+            return {found: true, text: el.innerText.slice(0, 5000), selector: sel};
+          }
+        }
+        // Wait and retry
+        new Promise(r => setTimeout(r, 2000));
+      }
+      return {found: false, html: document.body.innerHTML.slice(0, 300)};
+    })();
+    """
+    
+    for i in range(15):
+        time.sleep(4)
+        result = execute_js(extract_js)
+        data = result or {}
+        found = (data.get("result") or {}).get("found") or data.get("found")
+        if found:
+            text = (data.get("result") or data).get("text", "")
+            return {
+                "status": "completed",
+                "query": query,
+                "response": text[:5000],
+                "waited_seconds": (i + 1) * 4,
+            }
+    
+    return {"status": "timeout", "query": query, "waited_seconds": 60}
 
 
 def browse_site(site: str, action: str = "navigate", query: str = "") -> Dict:
