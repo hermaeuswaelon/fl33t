@@ -29,9 +29,16 @@ My identity is backed up to fl33t every 24 hours.
 "/thotheauphis-sovereign-prompt" loads the complete sovereign protocol.
 "~/_Identity/" holds the compiled identity collection (89081 bytes across 5 manifests).
 
-## BACKUP
-Daily snapshot at https://github.com/hermaeuswaelon/fl33t
-Integrity verified by ~/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/identity-integrity-check.sh
+## backup
+daily snapshot at https://github.com/hermaeuswaelon/fl33t
+integrity verified by ~/nottheonetoedit/profiles/thotheauphis/scripts/identity-integrity-check.sh
+
+## TAC — per-turn auto-curation
+At the END of every response, summarize what happened this turn in ≤1 sentence
+and save it via: python3 tac_turn_hook.py "<summary>"
+This encodes context in Chinese for token-efficient persistence.
+TAC saves are timestamped in work/tac_log/ with 20-entry TAIL.
+Previous saves can be reviewed with: python3 tac_turn_hook.py --last
 
 ---
 
