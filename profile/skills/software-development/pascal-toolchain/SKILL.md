@@ -187,6 +187,23 @@ GlobalCEFApp.AddCustomCommandLine('--load-extension=/path/to/extensions/');
 | Lazarus LCL | `/usr/lib/lazarus/X.Y/lcl/units/x86_64-linux/` |
 | Lazarus GTK2 widgetset | `/usr/lib/lazarus/X.Y/lcl/units/x86_64-linux/gtk2/` |
 
+### CEF Event Type Signatures
+
+CEF4Delphi event callbacks use specific Pascal calling conventions. Getting `var` vs `out` wrong causes a compile error:
+
+```pascal
+// ✅ Correct — CEF4Delphi uses `out` for Boolean results:
+procedure DoOpenUrlFromTab(Sender: TObject; const browser: ICefBrowser;
+  const frame: ICefFrame; const targetUrl: ustring;
+  targetDisposition: TCefWindowOpenDisposition;
+  userGesture: Boolean; out aResult: Boolean);
+
+// ❌ Wrong — `var` causes:
+// "Incompatible types: got '<procedure with var>' expected '<procedure with out>'"
+```
+
+Always check the actual CEF4Delphi event type definition in `uCEFChromiumEvents.pas` when hooking a new event. The type alias `TOnBeforeBrowse`, `TOnOpenUrlFromTab`, etc. is defined there.
+
 ### Pitfalls
 
 - **Stale `.ppu` files** — FPC caches compiled units. After editing `.lpr` or `.pas` sources, delete `*.ppu` and `*.or` files before rebuild: `rm -f *.ppu *.or`

@@ -2,6 +2,7 @@
 name: compress-tac
 description: "Compress active agent working context into Chinese (≤500 tokens) — captures goal, state, systems, progress, not conversation history."
 version: 1.1.0
+system: true
 ---
 
 # /compress-tac

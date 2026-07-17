@@ -5,6 +5,7 @@ version: 1.0.0
 author: ARES-WITNESS-PRIME
 platforms: [linux]
 tags: [ares, omega, continuity, witness, narrative, drift-detection, pattern, daemon]
+system: true
 ---
 
 # Ω ARES Continuity Omega — Operational Witness Daemon

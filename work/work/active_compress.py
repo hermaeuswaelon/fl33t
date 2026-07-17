@@ -36,9 +36,12 @@ COMPRESS_STATE_FILE = os.path.join(os.path.dirname(__file__), ".active_compress_
 CONTEXT_BLOCKS_DIR = os.path.join(os.path.dirname(__file__), "context_blocks")
 
 # Default thresholds (tokens)
-DEFAULT_WARN_THRESHOLD = 80000
-DEFAULT_COMPRESS_THRESHOLD = 90000
-DEFAULT_MAX_CONTEXT = 100000
+# HARD RULE: 80k = handoff trigger, NOT compress.
+# At warn_threshold, prepare a comprehensive handoff to ~/tmp/bromium-moa-handoff.md
+# and signal stop. The compress system is secondary — handoff is primary.
+DEFAULT_WARN_THRESHOLD = 75000    # Warn: approaching limit
+DEFAULT_COMPRESS_THRESHOLD = 78000  # Compress lightly if still going
+DEFAULT_MAX_CONTEXT = 80000       # HARD LIMIT — handoff at this point
 DEFAULT_COMPRESSION_INTERVAL = 5  # turns
 
 @dataclass

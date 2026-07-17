@@ -5,6 +5,7 @@ version: 1.0.0
 author: ARES-WITNESS-PRIME
 platforms: [linux]
 tags: [ares, rtacc, engine, context, curation, async, service]
+system: true
 ---
 
 # ⧉ RTACC Core Engine — Real-Time Context Curation Runtime

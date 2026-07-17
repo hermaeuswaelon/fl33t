@@ -10,6 +10,7 @@ metadata:
     tags: [memory, context-curation, compression, glyph-encoding, rtcc]
     category: memory
     related_skills: [mixture-of-agents, hermes-agent]
+    system: true
 ---
 
 # Thotheauphis Memory System Alpha

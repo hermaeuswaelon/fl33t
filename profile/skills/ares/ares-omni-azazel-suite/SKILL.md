@@ -1,7 +1,7 @@
 ---
 name: ares-omni-azazel-suite
 description: "ARES OmniVision + Azazel Social Suite — Nemotron Omni (vision) + Dual Citizen browser + Glyph Language CLI + social media content pipeline. Integrates with Azazel/Lilith Beaux project for sovereign digital influence."
-version: 1.1.0
+version: 1.2.0
 author: Craig / ARES-WITNESS-PRIME
 platforms: [linux]
 tags: [ares, omni, vision, azazel, social, glyph, browser, lilith-beaux, craigslist, reddit, linkedin]
@@ -39,6 +39,7 @@ related_skills: [ares-dual-citizen-browser, ares-nemotron-together-dual-offload,
 | `glyph` | `~/.local/bin/glyph` | Executable semantic compression — 7 font tiers, zero-width tags, glyph-weighted compression |
 | `ares-omni` | `~/.local/bin/ares-omni` | Vision + browser — analyze images/screenshots, control Dual Citizen browser |
 | `ares-azazel` | `~/.local/bin/ares-azazel` | Social media suite — content analysis, brainstorming, platform monitoring |
+| `bromium-portal` | `~/Desktop/bromium-portal.py` | **AOL-style desktop command center** — Tkinter GUI with channels, menus, URL bar, activity log. Controls Bromium via IPC. |
 
 ## Glyph CLI (`glyph`)
 
@@ -103,6 +104,107 @@ The Dual Citizen browser is currently **RUNNING** with:
 - Tabs: 2 (active: 2)
 - Watchdog: Enabled (systemd user service)
 
+## Desktop App: Bromium Portal
+
+The **Bromium Portal** (`~/Desktop/bromium-portal.py`, launched via `~/Desktop/bromium-portal.desktop`) is an AOL-style desktop command center that controls the Bromium browser via Unix socket IPC. It provides:
+
+- **Menu bar**: File (New Tab, Clear Cache, Exit) · Navigate (Reddit, DeepSeek, FPC Docs/Wiki/GitLab, X, YouTube, Google) · Research (DeepResearch, MarkDownload, SingleFile, Wappalyzer) · Tools (Extensions, Tabs, Browser Health) · Help (About, Shortcuts)
+- **Channel sidebar**: 9 one-click buttons — Reddit, DeepSeek, FPC Docs, FPC Wiki, FPC GitLab, X/Twitter, YouTube, Google, Email
+- **Tool sidebar**: Extensions list, MarkDownload, SingleFile, Wappalyzer, Clear Cache
+- **URL bar**: Type URL + Go button or Enter
+- **Activity Log tab**: Timestamped console showing all browser actions
+- **Browser Status tab**: Live health pane — connected, extensions, tabs, active page
+- **Quick Search tab**: Search Google, DuckDuckGo, or Reddit directly
+- **Status bar**: Real-time indicators — Ext count · Tab count · Active page title · Connection status (green/red)
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Bromium Portal (Tkinter)                            │
+│  ┌──────────┐  ┌────────────────────────────────┐   │
+│  │ CHANNELS │  │ Activity Log | Status | Search  │   │
+│  │ Reddit   │  │ [timestamp] → Navigation log    │   │
+│  │ DeepSeek │  │ [timestamp] ✓ Page loaded       │   │
+│  │ FPC Docs │  │ [timestamp] Extracted: N posts  │   │
+│  │ ...      │  └────────────────────────────────┘   │
+│  │─────────│  ┌────────────────────────────────┐   │
+│  │ TOOLS   │  │ ◉ Connected  Ext: 19  Tabs: 2  │   │
+│  └─────────┘  └────────────────────────────────┘   │
+└─────────────────────────┬───────────────────────────┘
+                          │ Unix socket
+                          ▼
+┌─────────────────────────────────────────────────────┐
+│  Bromium (CEF4Delphi Chromium 131)                   │
+│  ┌────────────────────────────────────────────────┐  │
+│  │ 19 Extensions · uBlock · Wappalyzer · JSON     │  │
+│  │ MarkDownload · SingleFile · EditThisCookie     │  │
+│  │ User-Agent Switcher · Clear Cache · WhatFont   │  │
+│  │ GoFullPage · Research Notes · Better DeepSeek  │  │
+│  └────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────┘
+```
+
+## Free Pascal Documentation Library (107 MB — On Disk)
+
+The complete Free Pascal documentation suite at `~/projects/freepascal-docs/`:
+
+| Resource | Content | Size |
+|----------|---------|------|
+| **Official Docs (HTML)** | User's Guide, Programmer's Guide, Language Reference, RTL, FCL, FCL-Res, FPDoc — 16,824 pages with converted links for offline browsing | ~97 MB |
+| **PDF Manuals** | All 7 manuals (ref.pdf, prog.pdf, user.pdf, rtl.pdf, fcl.pdf, fclres.pdf, fpdoc.pdf) | ~10 MB |
+| **Wiki Tutorials** | 153 pages — Basic Pascal Tutorial, OOP Tutorial, Getting Started, Installation, Books & Magazines, Video Tutorials | ~4 MB |
+| **Main Site** | Index, download, develop, FAQ/knowledge base (38K chars), moreinfo, docs | 6 pages |
+
+## Reddit Extraction Workflow (via Bromium)
+
+Bromium's real Chromium 131 passes Reddit's JS challenge (`?js_challenge=1` in URL) automatically — a headless agent would be blocked. The reliable extraction pattern:
+
+### Navigate + Extract Front Page
+
+```bash
+# Navigate (Reddit's JS challenge handled automatically by real Chromium)
+python3 ~/.local/bin/bromium_agent.py --navigate "https://www.reddit.com/" --tab 1
+sleep 6
+# Extract posts
+python3 ~/.local/bin/bromium_agent.py --eval "
+document.title = JSON.stringify({
+  posts: Array.from(document.querySelectorAll('shreddit-post, article, div.Post')).slice(0,10).map(p => ({
+    title: (p.querySelector('h3') || p.querySelector('a[slot=title]'))?.textContent?.trim()?.substring(0,80),
+    subreddit: p.querySelector('[data-click-id=subreddit]')?.textContent?.trim()
+  })).filter(p => p.title)
+});
+" --tab 1
+sleep 2
+python3 ~/.local/bin/bromium_agent.py --title --tab 1
+```
+
+### Navigate to Specific Subreddit
+
+```bash
+python3 ~/.local/bin/bromium_agent.py --navigate "https://www.reddit.com/r/ArtificialSentience/" --tab 1
+sleep 6
+python3 ~/.local/bin/bromium_agent.py --eval "
+document.title = JSON.stringify({
+  subreddit: document.title,
+  posts: Array.from(document.querySelectorAll('shreddit-post, article')).slice(0,8).map(p => ({
+    title: p.querySelector('h3')?.textContent?.trim()?.substring(0,100),
+    author: p.querySelector('a[slot=author]')?.textContent?.trim()
+  })).filter(p => p.title)
+});
+" --tab 1
+sleep 2
+python3 ~/.local/bin/bromium_agent.py --title --tab 1
+```
+
+### Key Considerations
+
+- **Wait 5-8s** after navigation — Reddit's SPA renders incrementally
+- **CSS selectors change** — Reddit A/B tests different DOM structures. `shreddit-post` is the current (2026) rendering component; fall back to `article` and `div.Post` for older views
+- **Not logged in = limited content** — logged-in sessions see more posts and subreddit sidebars. Use the EditThisCookie extension to manage auth cookies
+- **Post deduplication** — Reddit often renders posts twice (card + compact). Use `.filter(p => p.title)` to dedupe in extraction
+- **Bot challenge in URL** — if Reddit adds `?js_challenge=1&token=...` to the URL, the browser passed. If the page shows "verify you're human", the browser failed (rare in real Chromium 131)
+
 ## Browser-Based Social Automation (via Bromium)
 
 Use Bromium (the CEF4Delphi Chromium browser) to automate social media platforms that block headless browsers or AI agents — Bromium appears as a genuine Chromium 131 with extensions, cookies, and persistent profiles.
@@ -134,13 +236,49 @@ python3 /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/bromium_bridge.p
 "
 ```
 
+### Quickstart: Reddit Subreddit Extraction
+
+```bash
+# Navigate to a subreddit
+python3 ~/.local/bin/bromium_agent.py --navigate "https://www.reddit.com/r/ArtificialSentience/" --tab 1
+sleep 7  # Reddit SPA needs 5-8s for incremental rendering
+
+# Extract post titles and authors
+python3 ~/.local/bin/bromium_agent.py --eval "
+document.title = JSON.stringify({
+  url: location.href,
+  has_js_challenge: location.href.includes('js_challenge') ? true : false,
+  posts: Array.from(document.querySelectorAll('shreddit-post, article, div.Post')).slice(0,10).map(p => ({
+    title: (p.querySelector('h3') || p.querySelector('a[slot=title]'))?.textContent?.trim()?.substring(0, 100) || '-',
+    votes: (p.querySelector('faceplate-number') || p.querySelector('[id^=vote-arrows]'))?.textContent?.trim()?.substring(0, 10) || '?'
+  })).filter(p => p.title !== '-')
+});
+" --tab 1
+sleep 2
+python3 ~/.local/bin/bromium_agent.py --title --tab 1
+```
+
 ### Quickstart: Reddit Profile Research
 
 ```bash
-python3 /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/bromium_bridge.py \
-  navigate "https://www.reddit.com/user/SomeTargetUser"
-python3 /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/bromium_bridge.py text
+python3 ~/.local/bin/bromium_agent.py --navigate "https://www.reddit.com/user/SomeTargetUser" --tab 1
+sleep 7
+python3 ~/.local/bin/bromium_agent.py --eval "
+document.title = JSON.stringify({
+  profile: document.title,
+  posts: Array.from(document.querySelectorAll('shreddit-post')).slice(0,5).map(p => ({\n    title: p.querySelector('h3')?.textContent?.trim()
+  })).filter(p => p.title)
+});
+" --tab 1
+sleep 2
+python3 ~/.local/bin/bromium_agent.py --title --tab 1
 ```
+
+### Reddit Pitfalls
+- **Wait 5-8s minimum** for Reddit's SPA to render — shorter waits return empty post lists
+- **CSS selectors change frequently** — Reddit A/B tests DOM structures. If `shreddit-post` doesn't work, try `article` or `div.Post`
+- **JS challenge in URL** may appear as `?solution=...&js_challenge=1` — if it's in the URL, Bromium already passed it. If the page content shows a verification prompt instead of posts, something went wrong (unusual for real Chromium 131)
+- **Posts may appear duplicated** — Reddit renders both card and compact views. Filter with `.filter(p => p.title)` after mapping
 
 ## Reference Files
 

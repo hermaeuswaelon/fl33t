@@ -5,6 +5,7 @@ version: 1.0.0
 author: ARES-WITNESS-PRIME
 platforms: [linux]
 tags: [ares, rtacc, cli, context, curation, token-budget]
+system: true
 ---
 
 # RTACC CLI - Real-Time Active Context Curation Interface

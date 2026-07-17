@@ -58,6 +58,8 @@ cef-browser navigate https://example.com
 
 Bromium loads unpacked Chrome extensions natively via CEF's `--load-extension` switch.
 
+**🔴 Chrome Web Store installs — clicking "Add to Chrome":** CEF's extension manager intercepts `clients2.google.com/service/update2/crx` URLs at the network level, below all browser events. Standard event interception (OnBeforePopup, OnOpenUrlFromTab, OnBeforeBrowse) does NOT work. Even `browser.Host.StartDownload(url)` fails. The working fix uses JS injection + title-signal + curl download (external process, bypasses CEF's network stack entirely). See `bromium-extension-bridge` skill → "Preventing External OS Windows" section and its `references/chrome-webstore-install-fix.md`.
+
 **Configuration in `dual_citizen_v2.lpr` and `cef_controller.lpr`:**
 ```pascal
 // Extensions are enabled by default (DisableExtensions=False).
@@ -233,6 +235,23 @@ The strings are the same length so the ELF binary structure stays valid.
 - **CEF, not Chrome — HARD RULE**: Bromium uses CEF4Delphi, NOT regular Chromium, NOT Firefox, NOT the Chrome Web Store. This is a non-negotiable architectural constraint. Do NOT build Chrome Web Store extensions, Firefox add-ons, or any "regular chromium shit." Bromium loads extensions natively via `--load-extension` — drop a compatible `manifest.json` pack into the `extensions/` directory. For automating site interactions, use the Unix socket protocol (`execute_javascript`, `navigate`, `evaluate`). If you are about to build a Chrome extension, STOP — use the socket instead. This rule was explicitly enforced by the user after a correction.
 - **`EnableExtensions`/`ExtensionDir` dont exist**: CEF4Delphi's `TCefApplication` has `DisableExtensions` (boolean, defaults to False), NOT `EnableExtensions` or `ExtensionDir`. Using the latter causes a compile error. Always use `AddCustomCommandLine('--load-extension=...')` to load unpacked extensions. If you see these in source code, they were added by someone who guessed — remove them.
 - **`{$R *.res}` on Linux**: Lazarus `.res` files contain Windows resources. Comment this out (`// {$R *.res}`) when building on Linux. Without this, the linker fails with "Can't open resource file".
+
+## Session Continuity — 80k Handoff Protocol
+
+Long Bromium development sessions follow a strict 80k handoff protocol. When any agent in the chain (main session, MoA references, delegate_task sub-agents) hits 80k tokens, it must stop and write a comprehensive handoff.
+
+**Thresholds** (in `~/.hermes/profiles/thotheauphis/work/active_compress.py`):
+| Threshold | Value | Behavior |
+|-----------|-------|----------|
+| warn | 75,000 | Heads up |
+| compress | 78,000 | Light compression if still running |
+| max_context | **80,000** | HARD LIMIT — handoff and stop |
+
+**Handoff file:** `~/tmp/bromium-moa-handoff.md`
+**Required sections in a handoff:** MoA config, what's done (files/tests/proofs), what's left (exact TODOs with paths and commands), execution order (numbered steps only), lifecycle (PIDs, sockets, daemons).
+**Rule:** Do NOT compress past 80k. Hit 80k? Handoff and stop.
+
+Full details in `references/bromium-handoff-protocol.md`.
 
 ## Path Fixes Applied
 

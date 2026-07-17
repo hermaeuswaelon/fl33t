@@ -5,6 +5,7 @@ version: 1.0.0
 author: ARES-WITNESS-PRIME
 platforms: [linux]
 tags: [ares, alpha, offload, tool-context, compression, groq, daemon, service]
+system: true
 ---
 
 # ⚙️ ARES Offloader Alpha — Tool Context Compression Daemon

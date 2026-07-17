@@ -167,6 +167,26 @@ hermes fallback clear   # remove all
 
 Chains are defined in `config.yaml` under `fallback:` — but prefer the CLI for management.
 
+## MoA Provider Configuration
+
+Hermes MoA (Mixture of Agents) uses reference model slots defined in `config.yaml` under `moa.presets.default.reference_models`. Each slot specifies a provider and model.
+
+### Known Limitation: Per-Reference `extra_body_additions` NOT Forwarded
+
+**The `_run_reference()` function in `/opt/hermes-agent/agent/moa_loop.py` (line 220) does NOT forward `extra_body_additions` from the preset slot dict to the `call_llm` call.**
+
+The `slot` dict from the config can technically carry any key (like `extra_body_additions` or per-model `temperature`), but only `{provider, model, base_url, api_key, api_mode}` from `_slot_runtime()` reaches `call_llm`.
+
+**Impact:** You cannot currently set per-reference parameters like:
+- `reasoning_tokens` for deepseek-reasoner
+- `temperature`, `top_p`, `top_k`, frequency/presence penalty per reference model
+
+These must be set at the provider level (applying to ALL calls through that provider) until the source patch is applied.
+
+**Fix location:** `_run_reference()` lines 254-278 in `moa_loop.py` — extract `extra_body_additions` from the `slot` dict and pass it as a keyword argument to `call_llm`. The transport layer already supports it (chat_completions.py lines 497, 614).
+
+Full details in `references/moa-per-reference-params.md`.
+
 ## Key Files and Paths
 
 | Resource | Path |

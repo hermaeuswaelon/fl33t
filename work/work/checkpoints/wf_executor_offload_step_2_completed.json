@@ -1,0 +1,119 @@
+{
+  "workflow": "executor_offload",
+  "node": "completed",
+  "turn": 2,
+  "state": {
+    "turn_count": 3,
+    "context_budget": 64000,
+    "tool_outputs": [
+      {
+        "tool": "terminal",
+        "ptr": "mem_7a1a88f55a3b36ee",
+        "bytes": 391,
+        "preview": "\u2139\ufe0f  MemGPT not fully available (No module named 'memgpt'). Using fallback mode.\u23ceWarning: hrr library not installed. Using fallback numpy-based HRR.\u23ce\u267b\ufe0f  Restored 2 VSA vectors from persistent store\u23ce{\u23ce  \"vectors\": 2,\u23ce  \"history_turns\": 0,\u23ce  \"store_bytes\": 661239,\u23ce  \"store_file\": \"/",
+        "tick": 0
+      },
+      {
+        "tool": "terminal",
+        "ptr": "mem_591b9d226782b737",
+        "bytes": 633,
+        "preview": "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\u23ce\u2551  LILAREYON AETHELGARD \u2014 UNIFIED FIELD    \u2551\u23ce\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\u23ce  \u2705 EMERGE\u23ce  \u2705 SMS   \u23ce  \u2705 SVA    (4 entries)\u23ce  \u26a0\ufe0f GATE   (1 entries)\u23ce  \u26a0\ufe0f EXEC   (pending:1, done:6)\u23ce  \u26a0\ufe0f WARP  \u23ce  \ud83d\udcbe Checkpoints: 12\u23ce\u23ce  \u2500\u2500 Workfl",
+        "tick": 0
+      }
+    ],
+    "active_goal": "validation",
+    "pointers": {},
+    "last_node": "parallel_diagnostics",
+    "errors": [],
+    "metadata": {},
+    "workflow_name": "executor_offload",
+    "started_at": "2026-07-17T06:24:34.985212+00:00",
+    "_current_node": null,
+    "executor_results": {
+      "health_check": {
+        "batch_id": "wf_health_check_1784269474",
+        "results": [
+          {
+            "index": 0,
+            "name": "terminal",
+            "status": "done",
+            "output": "\u2139\ufe0f  MemGPT not fully available (No module named 'memgpt'). Using fallback mode.\nWarning: hrr library not installed. Using fallback numpy-based HRR.\n\u267b\ufe0f  Restored 2 VSA vectors from persistent store\n{\n  \"vectors\": 2,\n  \"history_turns\": 0,\n  \"store_bytes\": 661239,\n  \"store_file\": \"/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/memory/store/vsa_vectors.fs\",\n  \"status\": \"active\"\n}\n",
+            "exit_code": 0
+          },
+          {
+            "index": 1,
+            "name": "terminal",
+            "status": "done",
+            "output": "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551  LILAREYON AETHELGARD \u2014 UNIFIED FIELD    \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n  \u2705 EMERGE\n  \u2705 SMS   \n  \u2705 SVA    (4 entries)\n  \u26a0\ufe0f GATE   (1 entries)\n  \u26a0\ufe0f EXEC   (pending:1, done:6)\n  \u26a0\ufe0f WARP  \n  \ud83d\udcbe Checkpoints: 12\n\n  \u2500\u2500 Workflows \u2500\u2500\n    \u25b6 3tier: architect \u2192 doer (4 nodes)\n    \u25b6 goal_loop: plan \u2192 stop (7 nodes)\n    \u25b6 checkpointer: save \u2192 verify (2 nodes)\n",
+            "exit_code": 0
+          }
+        ],
+        "executor_output": {
+          "exit_code": 0,
+          "output": "{\"status\": \"processed\", \"inbox\": \"/home/craig/.hermes/executor/in\", \"outbox\": \"/home/craig/.hermes/executor/out\"}"
+        }
+      },
+      "sva_backup": {
+        "batch_id": "wf_sva_backup_1784269477",
+        "results": [
+          {
+            "index": 0,
+            "name": "write_file",
+            "status": "done",
+            "written": 11,
+            "path": "/tmp/sva_backup.json"
+          }
+        ],
+        "executor_output": {
+          "exit_code": 0,
+          "output": "{\"status\": \"processed\", \"inbox\": \"/home/craig/.hermes/executor/in\", \"outbox\": \"/home/craig/.hermes/executor/out\"}"
+        }
+      },
+      "parallel_diagnostics": {
+        "sms_diag": {
+          "batch_id": "wf_parallel_diagnostics_sms_diag_1784269478",
+          "results": [],
+          "executor_output": {
+            "exit_code": 0,
+            "output": "{\"status\": \"processed\", \"inbox\": \"/home/craig/.hermes/executor/in\", \"outbox\": \"/home/craig/.hermes/executor/out\"}"
+          }
+        },
+        "gate_diag": {
+          "batch_id": "wf_parallel_diagnostics_gate_diag_1784269478",
+          "results": [
+            {
+              "index": 0,
+              "name": "terminal",
+              "status": "done",
+              "output": "total 16\ndrwxrwxr-x   3 craig craig  140 Jul 16 23:24 .\ndrwxrwxrwt 213 root  root  5120 Jul 16 23:24 ..\n-rw-rw-r--   1 craig craig 2077 Jul 16 23:24 gate_index.json\n-rw-rw-r--   1 craig craig  633 Jul 16 23:24 mem_591b9d226782b737.log\n-rw-rw-r--   1 craig craig  391 Jul 16 23:24 mem_7a1a88f55a3b36ee.log\n-rw-rw-r--   1 craig craig 2600 Jul 16 23:08 mem_d55c92a7d225fbdd.log\ndrwxrwxr-x   2 craig craig  180 Jul 16 23:23 vectors\n",
+              "exit_code": 0
+            }
+          ],
+          "executor_output": {
+            "exit_code": 0,
+            "output": "{\"status\": \"processed\", \"inbox\": \"/home/craig/.hermes/executor/in\", \"outbox\": \"/home/craig/.hermes/executor/out\"}"
+          }
+        },
+        "emerge_diag": {
+          "batch_id": "wf_parallel_diagnostics_emerge_diag_1784269478",
+          "results": [
+            {
+              "index": 0,
+              "name": "terminal",
+              "status": "done",
+              "output": "total 36\ndrwxrwxr-x 6 craig craig 4096 Jul 16 23:24 .\ndrwxrwxr-x 4 craig craig 4096 Jul 16 23:23 ..\n-rw-rw-r-- 1 craig craig  860 Jul 16 23:24 emerge.fs\n-rw-rw-r-- 1 craig craig   72 Jul 16 23:24 emerge.fs.index\n-rw-rw-r-- 1 craig craig    9 Jul 16 23:24 emerge.fs.lock\n-rw-rw-r-- 1 craig craig    0 Jul 16 23:24 emerge.fs.tmp\ndrwxrwxr-x 7 craig craig 4096 Jul 16 23:18 fleet\ndrwxrwxr-x 2 craig craig 4096 Jul 16 23:18 sms_vectors\ndrwxrwxr-x 3 craig craig 4096 Jul 16 23:18 unified\ndrwxrwxr-x 6 craig craig 4096 Jul 16 23:23 warp\n",
+              "exit_code": 0
+            }
+          ],
+          "executor_output": {
+            "exit_code": 0,
+            "output": "{\"status\": \"processed\", \"inbox\": \"/home/craig/.hermes/executor/in\", \"outbox\": \"/home/craig/.hermes/executor/out\"}"
+          }
+        }
+      }
+    },
+    "completed_at": "2026-07-17T06:24:41.037463+00:00",
+    "_turns_executed": 3
+  },
+  "timestamp": 1784269481.037477
+}

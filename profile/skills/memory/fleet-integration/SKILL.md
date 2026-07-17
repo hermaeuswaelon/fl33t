@@ -1,7 +1,8 @@
 ---
 name: fleet-integration
 description: "Unified Fleet System Integration - ties together hermes-executor, EmergeFS, memory compression, fleet daemon registry, work orders"
-version: 1.0.0
+version: 1.1.0
+system: true
 ---
 
 # Fleet Integration Skill
@@ -59,6 +60,7 @@ Provides a unified interface for the Aethelgard fleet system:
 | sms-zodb-backup | Every 30min | sms-backup | ✅ OK (23 runs) |
 | sms-health-check | Every 120min | sms-health | ✅ OK (4 runs) |
 | sms-stats-log | Every 60min | sms-stats | ✅ OK (10 runs) |
+| uf-system-checkpoint | Every 4h | uf_integrator.py checkpoint | ✅ OK (created) |
 
 ### TAC Cron Fix (This Session)
 Cron jobs `auto-tac-compress` and `TAC auto-curation` failed with "Script not found" — scripts lived in `~/work/` but cron expected them in `~/scripts/`. Fixed by creating symlinks:
@@ -143,6 +145,7 @@ emerge_call /fleet/daemons/bromium-browser status
 
 ## Integration Points
 
+- **Emerge daemon**: systemd user service `emerge-node` on port 54242 (auto-start)
 - **Spades engine**: Stored as `/fleet/daemons/spades-engine`
 - **Memory daemon**: `/fleet/daemons/thotheauphis-memory`
 - **Executor**: `/fleet/daemons/hermes-executor`
@@ -150,8 +153,25 @@ emerge_call /fleet/daemons/bromium-browser status
 - **Improvements**: Logged to `/fleet/improvements/`
 - **Work orders**: `/fleet/work_orders/`
 - **Identities**: `/fleet/identities/`
+- **Unified Field**: `work/unified_field.py` — singleton connecting all subsystems
+- **Warp memory bridge**: `work/warp_bridge.py` — WarpMemoryStore / WarpSessionStore (see `references/warp-integration.md`)
 
-## EmergeFS Server Fix (Port Conflicts)
+## EmergeFS via systemd Daemon (July 17 — Preferred Approach)
+
+A standalone emerge node now runs as a **systemd user service** on port 54242,
+using a wrapper script at `~/.local/bin/emerge-node-standalone` that patches
+the start sequence for standalone operation:
+
+```bash
+systemctl --user status emerge-node     # ✅ active (running)
+systemctl --user enable emerge-node     # ✅ enabled (boot auto-start)
+journalctl --user -u emerge-node -f     # watch live logs
+```
+
+The unified field auto-discovers the server via `_try_known_ports([54242, ...])`.
+Fallback to JSON file store at `~/.emerge/data/` works when the server is down.
+
+## EmergeFS Server Fix (Legacy — Port Conflicts)
 
 The emerge node server (`emerge.node.server.NodeServer`) hardcodes ports in `setup()`:
 
@@ -189,6 +209,8 @@ python3 -c "from emerge.core.client import Z0RPCClient as Client; c=Client('loca
 ```
 
 ## Fleet Daemon Testing
+
+**Bias to action**: When asked for system testing, don't analyze first — execute. Fire subagent tests AND direct diagnostics simultaneously. Dispatch 3 subagents for deep-daemon/fleet/SMS testing while running hardware benchmarks and network checks in parallel. Report results as they arrive. A simultaneous-attack pattern reveals more in less time than a sequential one.
 
 When asked to test fleet daemons, follow this sequence:
 
@@ -235,7 +257,7 @@ health = fleet_health()
 # Returns: {systems: {event_bus, persistent_memory, lattice_mirror, error_ledger}}
 ```
 
-**⚠️ Known path mismatch**: `fleet_integration.py` resolves `FLEET_DIR = Path(__file__).resolve().parent.parent` → `/home/craig/projects/aethelgard/fleet/`, then checks `FLEET_DIR/data/persistent_memory.db`. But the actual databases live under `~/.NOTTHEONETOEDIT/fleet/data/`. Both paths must be checked — the NOTTE path is the production one.
+**✅ FIXED (Session 2026-07-16)**: Added `FLEET_DATA_DIR = Path.home() / ".NOTTHEONETOEDIT" / "fleet" / "data"` constant. All health checks use `FLEET_DATA_DIR`. Error ledger auto-created on first health check. Verified: persistent_memory=up (44KB), error_ledger=up, lattice_mirror=up, event_bus=down (no bus daemon).
 
 ### 4. Module Import Sweep
 Run the comprehensive import test (see reference file):
@@ -276,8 +298,8 @@ mem.stats()
 
 | Issue | File | Root Cause | Fix |
 |-------|------|------------|-----|
-| **Orphaned thoth socket** | `thoth_daemon.py` | `/tmp/` cleaned while daemon runs; socket fd held but FS entry gone | Kill + restart daemon |
-| **fleet_health() path mismatch** | `fleet_integration.py:286-303` | `FLEET_DIR` resolves to `~/projects/aethelgard/fleet/` but DB lives in `~/.NOTTHEONETOEDIT/fleet/data/` | Check NOTTE path as fallback |
+| **Orphaned thoth socket** | `thoth_daemon.py` | `/tmp/` cleaned (tmpwatch, temp cleanup, reboot) while daemon runs; socket fd held but FS entry gone | Kill old daemon → restart with `terminal(background=true)` → verify `ls -la /tmp/aethelgard_*.sock` → test with `python3 /path/to/thoth_daemon.py ping` |
+| **fleet_health() path mismatch** | `fleet_integration.py:286-303` | `FLEET_DIR` resolved to `~/projects/aethelgard/fleet/` but DB lives in `~/.NOTTHEONETOEDIT/fleet/data/` | **✅ FIXED 2026-07-16**: Added `FLEET_DATA_DIR`, all checks use it. persistent_memory=up, error_ledger=up. |
 | **fleet_fusion.py SyntaxError** | `fleet_fusion.py:56` | Stray `"""` on line 23 opens string that swallows `def bond():`; ⟡ (U+27E1) lands at module level | Merge Usage text (lines 18-22) into docstring; remove stray `"""` on lines 17 and 23 |
 | **memory_loom.py .env** | `memory_loom.py` | `dotenv` reads from `~/.env` which doesn't exist | Create file or patch module for graceful fallback |
 | **error_ledger.db never created** | `error_ledger.py` | DB is only created on first `log_error()` call; zero errors logged since deploy | No action needed — will create on first error |
@@ -294,8 +316,10 @@ mem.stats()
 
 ## References
 
+- `references/system-audit-workflow.md` — Complete 5-phase system audit, optimization, and verification workflow
 - `references/cron-job-management.md` — Full wrapper patterns, debugging, cronjob commands
 - `references/cron-job-wrapper-pattern.md` (in hermes-executor skill) — Canonical wrapper pattern
 - `references/emerge-server-fixes.md` — Emerge port/lock fixes, launch patterns
 - `references/lean-executor-pattern.md` — Three executor variants (strict, DeepSeek, batch processor)
 - `references/fleet-daemon-testing.md` — Complete fleet daemon testing procedures with session-specific commands
+- `references/warp-integration.md` — Warp binary build + warp_bridge.py API: WarpMemoryStore, WarpSessionStore, CLI commands

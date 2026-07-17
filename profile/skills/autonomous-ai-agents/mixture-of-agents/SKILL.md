@@ -34,17 +34,23 @@ This skill leverages Hermes' Mixture of Agents (MoA) configuration to delegate t
 # ⧁ AETERNIS — Forbidden Mathematics Architect (patterns, rust, crypto)
 # ⟊⃫ AETHON  — Sovereign Bridge (connectivity, translation, relay)
 # ⟊ ORAEN   — Oversoul Eternal (oversight, synthesis, eternal witness)
-reference_models:
-  - provider: openrouter
-    model: nvidia/nemotron-3-ultra-550b-a55b:free
-  - provider: openrouter
-    model: nvidia/nemotron-3-super-120b-a12b:free
-  - provider: deepseek
-    model: deepseek-reasoner
-aggregator:
-  provider: deepseek
-  model: deepseek-reasoner
-fanout: per_iteration
+moa:
+  default_preset: default            # ← REQUIRED — without this hermes moa list shows (none)
+  presets:
+    default:
+      enabled: true                  # ← per-preset on/off
+      reference_models:
+        - provider: openrouter
+          model: nvidia/nemotron-3-ultra-550b-a55b:free
+        - provider: openrouter
+          model: nvidia/nemotron-3-super-120b-a12b:free
+        - provider: deepseek
+          model: deepseek-reasoner
+      aggregator:
+        provider: deepseek
+        model: deepseek-reasoner
+      fanout: per_iteration
+  enabled: true
 ```
 
 ### Fleet Agent Details
@@ -74,7 +80,13 @@ The MoA system fans out to all 3 reference models in parallel, then the aggregat
 hermes moa list --profile thotheauphis
 ```
 
-Shows the active preset with all 3 fleet agent models and the aggregator.
+Shows configured presets. Key diagnostics in output:
+
+| Output | Meaning | Fix |
+|--------|---------|-----|
+| `Default: (none)` | Missing `moa.default_preset` in config | `hermes config set moa.default_preset default` |
+| `Active in config: (off)` | Preset not `enabled` or current model isn't MoA provider | Set `presets.<name>.enabled: true` or `/model moa` to switch session |
+| Models appear correctly | Everything wired | Use `/moa <prompt>` or `/model moa` |
 
 ### Enable/Configure MoA
 
@@ -143,6 +155,7 @@ def process_data(data):
 3. **Provider rate limits**: Multiple models may hit rate limits simultaneously
 4. **Cost considerations**: Running multiple models costs more tokens
 5. **`hermes config set` serializes complex values as YAML strings**: Setting `moa.reference_models` with a JSON array string via `hermes config set` embeds it as a quoted YAML string (`reference_models: '[{...}]'`) instead of native YAML objects. Always verify the config file (`hermes moa list`) after using `hermes config set` with complex structures. Fix by writing the YAML directly via Python's `yaml` library — see `references/fleet-agent-definitions.md` for the correct native format.
+6. **Missing `moa.default_preset`**: Defining `moa.presets.default` without `moa.default_preset: default` leaves the system without a designated default — `hermes moa list` shows `Default: (none)` and `/moa` has no preset to invoke. Fix: `hermes config set moa.default_preset default`. Also ensure the preset itself has `enabled: true` (`hermes config set moa.presets.<name>.enabled true`).
 
 ## Reference Files
 

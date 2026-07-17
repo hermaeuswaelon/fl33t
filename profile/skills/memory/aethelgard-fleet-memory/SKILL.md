@@ -9,6 +9,7 @@ metadata:
   hermes:
     tags: [fleet, shared-memory, aethelgard, persistence, agents]
     related_skills: [mixture-of-agents, thotheauphis-memory-system-alpha]
+    system: true
     category: memory
 ---
 

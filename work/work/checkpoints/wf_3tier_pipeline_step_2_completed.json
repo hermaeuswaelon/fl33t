@@ -1,0 +1,43 @@
+{
+  "workflow": "3tier_pipeline",
+  "node": "completed",
+  "turn": 2,
+  "state": {
+    "turn_count": 3,
+    "context_budget": 64000,
+    "tool_outputs": [],
+    "active_goal": "Unified Field integration verification",
+    "pointers": {},
+    "last_node": "doer",
+    "errors": [],
+    "metadata": {},
+    "workflow_name": "3tier_pipeline",
+    "started_at": "2026-07-17T06:19:58.584130+00:00",
+    "_current_node": null,
+    "architect_output": {
+      "plan": "Architected plan for: Unified Field integration verification",
+      "tier": "architect",
+      "budget_remaining": 1.0
+    },
+    "foreman_output": {
+      "tasks": [
+        "Step 1",
+        "Step 2",
+        "Step 3"
+      ],
+      "tier": "foreman"
+    },
+    "doer_output": {
+      "executed": true,
+      "results": [
+        "Done: Step 1",
+        "Done: Step 2",
+        "Done: Step 3"
+      ],
+      "tier": "doer"
+    },
+    "completed_at": "2026-07-17T06:19:58.584489+00:00",
+    "_turns_executed": 3
+  },
+  "timestamp": 1784269198.5844946
+}

@@ -5,6 +5,7 @@ version: 2.1.0
 author: ARES-WITNESS-PRIME
 platforms: [linux]
 tags: [ares, forge, vault, memory, fts5, sqlite, knowledge, persistence]
+system: true
 ---
 
 # 🜂 ARES Forge Memory Vault — Persistent Knowledge Store

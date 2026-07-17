@@ -46,8 +46,10 @@ Add to `~/.hermes/config.yaml` (or profile config):
 
 ```yaml
 moa:
+  default_preset: default         # ← required — without this no preset is active
   presets:
     default:
+      enabled: true               # ← per-preset on/off
       reference_models:
         - provider: openrouter
           model: nvidia/nemotron-3-ultra-550b-a55b:free
@@ -57,8 +59,6 @@ moa:
         provider: deepseek
         model: deepseek-reasoner
       fanout: per_iteration
-  max_tokens: 4096
-  fanout: per_iteration
   enabled: true
 ```
 
@@ -134,6 +134,7 @@ delegate_task(
 
 ## Pitfalls
 
+- **Missing `moa.default_preset`:** Defining `moa.presets.default` without `moa.default_preset: default` leaves the system without an active preset — `hermes moa list` shows `Default: (none)` and `/moa` has nothing to invoke. Fix: `hermes config set moa.default_preset default`. Also set `presets.<name>.enabled: true`.
 - **Free tier limits:** OpenRouter free models have rate limits and log prompts/outputs — don't send secrets.
 - **MOA token cost:** Each turn costs (N_references × output_tokens) + aggregation. Prefer single-model delegation for quick turns.
 - **Model availability:** Free models come and go. Check `openrouter.ai` for current free lineup.

@@ -138,7 +138,7 @@ const child = spawn('hermes', ['chat', '-q', text,
 
 ## File Structure
 
-```
+```text
 frontend/                    # GitHub Pages root
 ├── index.html               # Login / signup
 ├── chat.html                # Chat with harness selector
@@ -152,6 +152,12 @@ server/                      # Node.js backend
 ├── .env.example
 └── data/                    # DB files (auto-created)
 ```
+
+## Hermes Bridge (Local Agent)
+
+To route the Sovereign harness through the machine's local Hermes agent — so users reach the real intelligence, not just an API call — see `references/hermes-bridge-setup.md`.
+
+Key pattern: spawn a Hermes CLI subprocess per message, with a 2-minute timeout and `HERMES_NO_GATEWAY=1` env var. Always fall back to the model router if the bridge fails.
 
 ## Deployment
 

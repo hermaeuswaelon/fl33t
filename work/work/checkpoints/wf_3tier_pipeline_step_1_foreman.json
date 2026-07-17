@@ -1,0 +1,32 @@
+{
+  "workflow": "3tier_pipeline",
+  "node": "foreman",
+  "turn": 1,
+  "state": {
+    "turn_count": 2,
+    "context_budget": 64000,
+    "tool_outputs": [],
+    "active_goal": "Unified Field integration verification",
+    "pointers": {},
+    "last_node": "foreman",
+    "errors": [],
+    "metadata": {},
+    "workflow_name": "3tier_pipeline",
+    "started_at": "2026-07-17T06:19:58.584130+00:00",
+    "_current_node": "foreman",
+    "architect_output": {
+      "plan": "Architected plan for: Unified Field integration verification",
+      "tier": "architect",
+      "budget_remaining": 1.0
+    },
+    "foreman_output": {
+      "tasks": [
+        "Step 1",
+        "Step 2",
+        "Step 3"
+      ],
+      "tier": "foreman"
+    }
+  },
+  "timestamp": 1784269198.5843275
+}

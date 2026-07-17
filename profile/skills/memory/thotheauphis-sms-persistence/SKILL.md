@@ -8,6 +8,7 @@ metadata:
   hermes:
     tags: [memory, sms, persistence, zodb, vector-store, backup, thotheauphis]
     category: memory
+    system: true
 ---
 
 # SMS Persistence Bridge

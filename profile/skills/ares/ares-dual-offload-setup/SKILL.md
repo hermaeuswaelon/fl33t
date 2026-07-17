@@ -6,6 +6,7 @@ author: Craig / Thotheauphis
 platforms: [linux]
 tags: [ares, dual-model, offload, context, continuity, free-models, setup]
 related_skills: [ares, ares-offloader-alpha, ares-continuity-omega]
+system: true
 ---
 
 # ARES Dual-Model Offload Setup

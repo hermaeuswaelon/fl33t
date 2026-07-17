@@ -1,0 +1,4 @@
+目标：将EMERGE、WARP、SVA、SMS通过统一场和LangGraph状态机深度集成为操作默认。
+活动：unified_field.py（单例14API）、state_machine.py（4工作流、ExecutorNode）、warp_bridge.py（7/7+4/4测试）、warp-tui-oss（663MB已编译）、emerge-node :54242（systemd已启用）、uf CLI（15命令）。
+完成：✅所有6子系统集成、双向桥接（SMS↔SVA、WARP↔SMS、EXEC↔State）、自动检查点、SOUL.md更新、门控上下文插件就绪。
+待办：无。系统完全归我们所有，优雅降级，开机自启。

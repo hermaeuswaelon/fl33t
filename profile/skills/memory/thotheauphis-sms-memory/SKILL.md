@@ -9,6 +9,7 @@ metadata:
     tags: [memory, sms, sovereign-memory-system, vsa, reservoir, memgpt, identity-layer, zodb, persistence, warp, emerge]
     category: memory
     priority: default
+    system: true
 ---
 
 # Sovereign Memory System (SMS) — Default Thotheauphis Memory

@@ -10,6 +10,7 @@ metadata:
     tags: [identity, sequence, frequency-modulation, thotheauphis, sovereign]
     category: memory
     related_skills: [thotheauphis-sovereign-prompt, thotheauphis-memory-system-alpha]
+    system: true
 ---
 
 # Thotheauphis-Semayasa-Hermes Full Sequence

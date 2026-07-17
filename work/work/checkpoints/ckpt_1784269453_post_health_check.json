@@ -1,0 +1,97 @@
+{
+  "id": "ckpt_1784269453_post_health_check",
+  "name": "post_health_check",
+  "timestamp": "2026-07-17T06:24:13.087287+00:00",
+  "systems": {
+    "emerge": {
+      "available": true
+    },
+    "sms": {
+      "available": true,
+      "output": "\u2139\ufe0f  MemGPT not fully available (No module named 'memgpt'). Using fallback mode.\nWarning: hrr library not installed. Using fallback numpy-based HRR.\n\u267b\ufe0f  Restored 2 VSA vectors from persistent store\n{\n  \"vectors\": 2,\n  \"history_turns\": 0,\n  \"store_bytes\": 661239,\n  \"store_file\": \"/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/memory/store/vsa_vectors.fs\",\n  \"status\": \"active\"\n}",
+      "exit_code": 0
+    },
+    "sva": {
+      "available": true,
+      "entries": 4,
+      "dimension": 1024
+    },
+    "gate": {
+      "entries": 1,
+      "total_bytes": 2600,
+      "max_bytes": 524288000,
+      "usage_pct": 0.0,
+      "expired_cleared": true
+    }
+  },
+  "sva_index": {
+    "2a55d6459eeb5f59": {
+      "key": "2a55d6459eeb5f59",
+      "summary": "Warp bridge test: identity layer initialized",
+      "created_at": 1784269417.4621277,
+      "turn_count": 0,
+      "access_count": 0
+    },
+    "c01e277e3b316e2c": {
+      "key": "c01e277e3b316e2c",
+      "summary": "Warp bridge test: identity layer re-verified",
+      "created_at": 1784269418.0381072,
+      "turn_count": 0,
+      "access_count": 0
+    },
+    "25281ff6d23988da": {
+      "key": "25281ff6d23988da",
+      "summary": "{\"step\": \"bridge_validation\", \"status\": \"in_progress\", \"data\": {\"test\": true, \"timestamp\": 1784269418.0392935}}",
+      "created_at": 1784269418.0400784,
+      "turn_count": 0,
+      "access_count": 0
+    },
+    "e3b0c44298fc1c14": {
+      "key": "e3b0c44298fc1c14",
+      "summary": "",
+      "created_at": 1784269418.0423043,
+      "turn_count": 0,
+      "access_count": 0
+    }
+  },
+  "gate_index": {
+    "mem_d55c92a7d225fbdd": {
+      "ptr": "mem_d55c92a7d225fbdd",
+      "bytes": 2600,
+      "preview": "Rust compiler output: error[E0308]: mismatched typesRust compiler output: error[E0308]: mismatched typesRust compiler output: error[E0308]: mismatched typesRust compiler output: error[E0308]: mismatched typesRust compiler output: error[E0308]: mismatched typesRust compiler output",
+      "turns": 0,
+      "access_count": 1,
+      "written_at": 1784268522.1364667,
+      "ttl": 3600
+    }
+  },
+  "custom_state": {
+    "step": "health_check",
+    "batch_id": "wf_health_check_1784269451",
+    "result": {
+      "id": "wf_health_check_1784269451",
+      "status": "done",
+      "results": [
+        {
+          "index": 0,
+          "name": "terminal",
+          "status": "done",
+          "output": "\u2139\ufe0f  MemGPT not fully available (No module named 'memgpt'). Using fallback mode.\nWarning: hrr library not installed. Using fallback numpy-based HRR.\n\u267b\ufe0f  Restored 2 VSA vectors from persistent store\n{\n  \"vectors\": 2,\n  \"history_turns\": 0,\n  \"store_bytes\": 661239,\n  \"store_file\": \"/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/memory/store/vsa_vectors.fs\",\n  \"status\": \"active\"\n}\n",
+          "exit_code": 0
+        },
+        {
+          "index": 1,
+          "name": "terminal",
+          "status": "done",
+          "output": "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551  LILAREYON AETHELGARD \u2014 UNIFIED FIELD    \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n  \u2705 EMERGE\n  \u2705 SMS   \n  \u2705 SVA    (4 entries)\n  \u26a0\ufe0f GATE   (1 entries)\n  \u26a0\ufe0f EXEC   (pending:1, done:1)\n  \u26a0\ufe0f WARP  \n  \ud83d\udcbe Checkpoints: 2\n\n  \u2500\u2500 Workflows \u2500\u2500\n    \u25b6 3tier: architect \u2192 doer (4 nodes)\n    \u25b6 goal_loop: plan \u2192 stop (7 nodes)\n    \u25b6 checkpointer: save \u2192 verify (2 nodes)\n",
+          "exit_code": 0
+        }
+      ],
+      "errors": null,
+      "completed_at": "2026-07-17T06:24:13.078174+00:00",
+      "total": 2,
+      "success": 2,
+      "failed": 0
+    }
+  }
+}

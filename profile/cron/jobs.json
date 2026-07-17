@@ -29,7 +29,7 @@
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-15T06:40:03.749779-07:00",
-      "next_run_at": "2026-07-17T09:00:00-07:00",
+      "next_run_at": "2026-07-18T09:00:00-07:00",
       "last_run_at": "2026-07-16T09:00:20.680382-07:00",
       "last_status": "ok",
       "last_error": null,
@@ -62,15 +62,15 @@
       "schedule_display": "0 * * * *",
       "repeat": {
         "times": null,
-        "completed": 20
+        "completed": 40
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-15T17:41:32.206725-07:00",
-      "next_run_at": "2026-07-16T14:00:00-07:00",
-      "last_run_at": "2026-07-16T13:00:12.468510-07:00",
+      "next_run_at": "2026-07-17T10:00:00-07:00",
+      "last_run_at": "2026-07-17T09:00:22.615701-07:00",
       "last_status": "error",
       "last_error": "Blocked: script path resolves outside the scripts directory (/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts): 'tac-curation.sh'",
       "last_delivery_error": null,
@@ -102,15 +102,15 @@
       "schedule_display": "*/30 * * * *",
       "repeat": {
         "times": null,
-        "completed": 28
+        "completed": 68
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-15T23:02:11.886187-07:00",
-      "next_run_at": "2026-07-16T13:30:00-07:00",
-      "last_run_at": "2026-07-16T13:00:12.471304-07:00",
+      "next_run_at": "2026-07-17T09:30:00-07:00",
+      "last_run_at": "2026-07-17T09:00:22.619265-07:00",
       "last_status": "error",
       "last_error": "Blocked: script path resolves outside the scripts directory (/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts): 'auto-tac-compress.py'",
       "last_delivery_error": null,
@@ -142,15 +142,15 @@
       "schedule_display": "* * * * *",
       "repeat": {
         "times": null,
-        "completed": 830
+        "completed": 2014
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-15T23:17:00.183600-07:00",
-      "next_run_at": "2026-07-16T13:17:00-07:00",
-      "last_run_at": "2026-07-16T13:16:12.654161-07:00",
+      "next_run_at": "2026-07-17T09:01:00-07:00",
+      "last_run_at": "2026-07-17T09:00:22.671111-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -221,22 +221,23 @@
       "schedule_display": "0 0 * * *",
       "repeat": {
         "times": null,
-        "completed": 0
+        "completed": 1
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-16T00:16:50.053692-07:00",
-      "next_run_at": "2026-07-17T00:00:00-07:00",
-      "last_run_at": null,
-      "last_status": null,
-      "last_error": null,
+      "next_run_at": "2026-07-18T00:00:00-07:00",
+      "last_run_at": "2026-07-17T00:00:18.050593-07:00",
+      "last_status": "error",
+      "last_error": "Script not found: /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/fleet_integration.py register",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": null,
       "enabled_toolsets": null,
-      "workdir": null
+      "workdir": null,
+      "fire_claim": null
     },
     {
       "id": "7a49292bad86",
@@ -260,15 +261,15 @@
       "schedule_display": "every 5m",
       "repeat": {
         "times": null,
-        "completed": 155
+        "completed": 391
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-16T00:16:54.880874-07:00",
-      "next_run_at": "2026-07-16T13:21:12.599384-07:00",
-      "last_run_at": "2026-07-16T13:16:12.599384-07:00",
+      "next_run_at": "2026-07-17T09:01:22.574235-07:00",
+      "last_run_at": "2026-07-17T08:56:22.574235-07:00",
       "last_status": "error",
       "last_error": "Script not found: /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts/fleet_integration.py health",
       "last_delivery_error": null,
@@ -300,15 +301,15 @@
       "schedule_display": "*/30 * * * *",
       "repeat": {
         "times": null,
-        "completed": 26
+        "completed": 66
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-16T00:16:59.108725-07:00",
-      "next_run_at": "2026-07-16T13:30:00-07:00",
-      "last_run_at": "2026-07-16T13:00:12.472262-07:00",
+      "next_run_at": "2026-07-17T09:30:00-07:00",
+      "last_run_at": "2026-07-17T09:00:22.621474-07:00",
       "last_status": "error",
       "last_error": "Blocked: script path resolves outside the scripts directory (/home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/scripts): 'auto-tac-compress.py'",
       "last_delivery_error": null,
@@ -340,15 +341,15 @@
       "schedule_display": "every 30m",
       "repeat": {
         "times": null,
-        "completed": 28
+        "completed": 66
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-16T00:39:44.524437-07:00",
-      "next_run_at": "2026-07-16T13:26:12.970967-07:00",
-      "last_run_at": "2026-07-16T12:56:12.970967-07:00",
+      "next_run_at": "2026-07-17T09:04:22.949940-07:00",
+      "last_run_at": "2026-07-17T08:34:22.949940-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -380,15 +381,15 @@
       "schedule_display": "every 120m",
       "repeat": {
         "times": null,
-        "completed": 6
+        "completed": 16
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-16T00:53:00.034980-07:00",
-      "next_run_at": "2026-07-16T14:39:12.891562-07:00",
-      "last_run_at": "2026-07-16T12:39:12.891562-07:00",
+      "next_run_at": "2026-07-17T10:39:23.017815-07:00",
+      "last_run_at": "2026-07-17T08:39:23.017815-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -420,15 +421,15 @@
       "schedule_display": "every 60m",
       "repeat": {
         "times": null,
-        "completed": 13
+        "completed": 33
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-16T00:53:01.041666-07:00",
-      "next_run_at": "2026-07-16T13:39:12.475445-07:00",
-      "last_run_at": "2026-07-16T12:39:12.475445-07:00",
+      "next_run_at": "2026-07-17T09:58:23.192274-07:00",
+      "last_run_at": "2026-07-17T08:58:23.192274-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -437,7 +438,49 @@
       "enabled_toolsets": null,
       "workdir": null,
       "fire_claim": null
+    },
+    {
+      "id": "0368a93323f6",
+      "name": "uf-system-checkpoint",
+      "prompt": "Run unified field checkpoint and health report. Execute: python3 /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/uf_integrator.py checkpoint auto_4h && python3 /home/craig/.NOTTHEONETOEDIT/profiles/thotheauphis/work/uf_integrator.py status",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "deepseek",
+      "model_snapshot": "deepseek-reasoner",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "interval",
+        "minutes": 240,
+        "display": "every 240m"
+      },
+      "schedule_display": "every 240m",
+      "repeat": {
+        "times": null,
+        "completed": 2
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-07-16T23:18:49.346403-07:00",
+      "next_run_at": "2026-07-17T11:19:21.764222-07:00",
+      "last_run_at": "2026-07-17T07:19:21.764222-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Skipped to prevent unintended spend: global inference config drifted since this job was created (provider 'deepseek' -> 'moa'; model 'deepseek-reasoner' -> 'default'), and this job is unpinned. No inference call was made. To run on the new config, pin it explicitly: `cronjob action=update job_id=0368a93323f6 provider=<provider> model=<model>` (or pin the original values to keep them). See #44585.",
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": [
+        "terminal"
+      ],
+      "workdir": null,
+      "fire_claim": null
     }
   ],
-  "updated_at": "2026-07-16T13:16:12.654456-07:00"
+  "updated_at": "2026-07-17T09:00:22.671325-07:00"
 }

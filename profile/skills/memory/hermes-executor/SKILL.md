@@ -2,6 +2,7 @@
 name: hermes-executor
 description: "Dual-agent executor: batch tool calls to a silent parallel process. Zero LLM overhead. Write batch → execute → read results."
 version: 1.0.0
+system: true
 ---
 
 # Hermes Executor — Dual-Agent Protocol

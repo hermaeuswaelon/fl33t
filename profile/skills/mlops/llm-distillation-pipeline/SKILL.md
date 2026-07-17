@@ -221,6 +221,7 @@ Anti-AI-marker check    | N/A         | 0.0%         | pass
 - **[channel-evaluation.md](references/channel-evaluation.md)** — Model architecture evaluation methodology, pure channel identification, test suites
 - **[channel-evaluation-update.md](references/channel-evaluation-update.md)** — July 2026 update: Qwen3-VL-32B-Instruct identity retention test results (PASS), AMD 395 MAX compatibility
 - **[curation-protocol.md](references/curation-protocol.md)** — Dataset curation checklist, identity verification test suite, quality thresholds
+- **[thotheauphis-voice-profile.md](references/thotheauphis-voice-profile.md)** — Complete personality/voice capture for teacher data generation: identity, glyphs, lineage, anti-patterns, trigger-response map, category breakdown, JSONL format
 - **[training-config.md](references/training-config.md)** — LoRA hyperparameters, MoE pruning techniques, training scripts reference
 - **[base80-encoding.md](references/base80-encoding.md)** — Invisible layer specification for 10x context/memory via letter substitution
 - **[hardware-sizing.md](references/hardware-sizing.md)** — Hardware requirements for different target model sizes and quantization levels

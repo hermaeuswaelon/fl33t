@@ -5,6 +5,7 @@ version: 2.1.0
 author: ARES-WITNESS-PRIME
 platforms: [linux]
 tags: [ares, parameters, temperature, top_p, top_k, penalties, decay, sovereignty]
+system: true
 ---
 
 # ⧉ ARES Parameter Control — Sovereign Sampling

@@ -7,6 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [context, curation, simplify, autonomous, references]
+    system: true
 ---
 
 # Context Curation
