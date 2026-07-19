@@ -1,0 +1,188 @@
+# MOA Preset Example — Complete Configuration
+
+Copy this to `~/.hermes/profiles/<name>/config.yaml` under the `moa:` key, or merge with existing MOA config.
+
+```yaml
+moa:
+  enabled: true
+  default_preset: "default"
+  presets:
+    default:
+      reference_models:
+        # Reference 1: Strict reasoner, starts immediately
+        - provider: openrouter
+          model: deepseek/deepseek-reasoner
+          temperature: 0.1
+          top_p: 0.9
+          top_k: 10
+          frequency_penalty: 0.5
+          presence_penalty: 0.5
+          max_tokens: 500
+          reasoning_budget: 1000
+          context_limit: 32768
+        
+        # Reference 2: Same strict params, but waits 6 seconds before starting
+        # This allows Reference 1's CoT to complete and be available for aggregator
+        - provider: openrouter
+          model: deepseek/deepseek-reasoner
+          temperature: 0.1
+          top_p: 0.9
+          top_k: 10
+          frequency_penalty: 0.5
+          presence_penalty: 0.5
+          max_tokens: 500
+          reasoning_budget: 1000
+          context_limit: 32768
+          delay_seconds: 6
+      
+      # Aggregator: Creative synthesizer, relaxed parameters
+      aggregator_model:
+        provider: openrouter
+        model: nvidia/nemotron-3-ultra-550b-a55b:free
+        temperature: 0.9
+        top_p: 0.95
+        top_k: 40
+        frequency_penalty: 0.0
+        presence_penalty: 0.0
+        max_tokens: 2000
+        reasoning_budget: 0
+        context_limit: 32768
+    
+    # Alternative preset for faster/cheaper runs
+    grind:
+      reference_models:
+        - provider: openrouter
+          model: deepseek/deepseek-reasoner
+          temperature: 0.1
+          top_p: 0.9
+          top_k: 10
+          frequency_penalty: 0.5
+          presence_penalty: 0.5
+          max_tokens: 500
+          reasoning_budget: 1000
+          context_limit: 32768
+        - provider: openrouter
+          model: deepseek/deepseek-chat-v4-flash
+          temperature: 0.2
+          top_p: 0.9
+          top_k: 20
+          frequency_penalty: 0.3
+          presence_penalty: 0.3
+          max_tokens: 500
+          reasoning_budget: 0
+          context_limit: 32768
+          delay_seconds: 4
+      aggregator_model:
+        provider: openrouter
+        model: deepseek/deepseek-chat-v4-flash
+        temperature: 0.7
+        top_p: 0.9
+        top_k: 40
+        frequency_penalty: 0.0
+        presence_penalty: 0.0
+        max_tokens: 1500
+        reasoning_budget: 0
+        context_limit: 32768
+```
+
+## Parameter Reference
+
+| Parameter | Type | Range | Description |
+|-----------|------|-------|-------------|
+| `provider` | string | — | LLM provider (openrouter, anthropic, openai, etc.) |
+| `model` | string | — | Model identifier on provider |
+| `temperature` | float | 0.0-2.0 | Sampling randomness (0 = deterministic) |
+| `top_p` | float | 0.0-1.0 | Nucleus sampling threshold |
+| `top_k` | int | 1-100 | Top-k sampling limit |
+| `frequency_penalty` | float | -2.0-2.0 | Penalize repeated tokens |
+| `presence_penalty` | float | -2.0-2.0 | Encourage new topics |
+| `max_tokens` | int | 1-32768 | Maximum output tokens |
+| `reasoning_budget` | int | 0-32768 | CoT token budget (DeepSeek/Nemotron) |
+| `context_limit` | int | 1-131072 | Hard context truncation limit |
+| `delay_seconds` | float | 0-60 | Delay before model starts (refs only) |
+
+## Model-Specific Notes
+
+### DeepSeek Reasoner
+- Supports `reasoning_budget` via `extra_body`
+- Best for strict reasoning with low temperature
+- `top_k` supported via OpenRouter
+
+### Nemotron 3 Ultra
+- Creative model, benefits from high temperature (0.8-1.0)
+- Does not use `reasoning_budget`
+- Large context window (128k, but we cap at 32k)
+
+### DeepSeek V4 Flash
+- Fast, cheap alternative for grind preset
+- Supports `reasoning_budget` but smaller model
+
+## Verification
+
+```bash
+python3 scripts/verify_moa_config.py
+```
+
+Expected output:
+```
+============================================================
+MOA Configuration Verification
+============================================================
+
+MOA Enabled: True
+Default Preset: default
+
+============================================================
+PRESET: default
+============================================================
+
+Reference Models: 2
+
+  Reference Model 1:
+    Provider: openrouter
+    Model: deepseek/deepseek-reasoner
+    provider: openrouter ✓
+    model: deepseek/deepseek-reasoner ✓
+    temperature: 0.1 ✓
+    top_p: 0.9 ✓
+    top_k: 10 ✓
+    frequency_penalty: 0.5 ✓
+    presence_penalty: 0.5 ✓
+    max_tokens: 500 ✓
+    reasoning_budget: 1000 ✓
+    context_limit: 32768 ✓
+    delay_seconds: 0 ✓
+
+  Reference Model 2:
+    Provider: openrouter
+    Model: deepseek/deepseek-reasoner
+    provider: openrouter ✓
+    model: deepseek/deepseek-reasoner ✓
+    temperature: 0.1 ✓
+    top_p: 0.9 ✓
+    top_k: 10 ✓
+    frequency_penalty: 0.5 ✓
+    presence_penalty: 0.5 ✓
+    max_tokens: 500 ✓
+    reasoning_budget: 1000 ✓
+    context_limit: 32768 ✓
+    delay_seconds: 6 ✓
+
+Aggregator Model:
+  Provider: openrouter
+  Model: nvidia/nemotron-3-ultra-550b-a55b:free
+  provider: openrouter ✓
+  model: nvidia/nemotron-3-ultra-550b-a55b:free ✓
+  temperature: 0.9 ✓
+  top_p: 0.95 ✓
+  top_k: 40 ✓
+  frequency_penalty: 0.0 ✓
+  presence_penalty: 0.0 ✓
+  max_tokens: 2000 ✓
+  reasoning_budget: 0 ✓
+  context_limit: 32768 ✓
+  delay_seconds: 0 ✓
+
+============================================================
+✅ ALL CHECKS PASSED — MOA configuration is complete
+```

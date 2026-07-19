@@ -183,6 +183,89 @@ t.wait_primes(3)    # 2,3,5 × φ
 
 The system uses 18 fundamental mathematical constants, each carrying its own harmonic signature. The random multiplier ensures no two waits are identical. Sequences (Fibonacci, primes) add structured chaos. Chaos mode adds maximum entropy.
 
+## Advanced Human-Like Timer Pattern (Reddit Worker Integration)
+
+The Reddit worker implements a more sophisticated human-like delay generator that combines multiple statistical models:
+
+```python
+class IrrationalTimer:
+    """Human-like delays: log-normal base + Pareto bursts + circadian rhythm."""
+    
+    def __init__(self, base_mu: float = 1.5, base_sigma: float = 0.5,
+                 burst_alpha: float = 1.5, burst_scale: float = 2.0,
+                 circadian_amplitude: float = 0.3):
+        self.base_mu = base_mu
+        self.base_sigma = base_sigma
+        self.burst_alpha = burst_alpha
+        self.burst_scale = burst_scale
+        self.circadian_amplitude = circadian_amplitude
+        self.last_action = 0
+        
+    def _circadian_factor(self) -> float:
+        """Circadian rhythm: slower at night, faster mid-day."""
+        hour = datetime.now().hour
+        phase = (hour - 14) * (3.14159 / 12)
+        return 1.0 + self.circadian_amplitude * math.sin(phase)
+    
+    def sleep(self, action_type: str = "default"):
+        """Sleep for a human-like duration based on action type."""
+        import math
+        
+        # Action-type specific log-normal profiles
+        profiles = {
+            "message": (1.8, 0.4),
+            "comment": (1.2, 0.3),
+            "reply": (1.0, 0.3),
+            "post": (2.5, 0.5),
+            "upvote": (0.5, 0.2),
+            "scrape": (0.8, 0.2),
+            "global": (2.0, 0.5),
+            "default": (1.5, 0.4),
+        }
+        
+        mu, sigma = profiles.get(action_type, profiles["default"])
+        
+        # Log-normal base delay
+        base_delay = random.lognormvariate(mu, sigma)
+        
+        # Pareto burst (rare long pauses ~5%)
+        if random.random() < 0.05:
+            burst = random.paretovariate(self.burst_alpha) * self.burst_scale
+            base_delay += burst
+            log.debug(f"Burst delay: {burst:.1f}s")
+        
+        # Circadian modulation
+        base_delay *= self._circadian_factor()
+        
+        # Minimum spacing from last action
+        since_last = time.time() - self.last_action
+        if since_last < base_delay:
+            base_delay = base_delay - since_last + random.uniform(0.1, 0.5)
+        
+        base_delay = max(0.5, base_delay)  # Floor at 500ms
+        
+        log.debug(f"Sleeping {base_delay:.1f}s for {action_type}")
+        time.sleep(base_delay)
+        self.last_action = time.time()
+```
+
+### Key Differences from Mathematical Constants Approach
+
+| Aspect | Mathematical Constants | Human-Like Timer (Reddit Worker) |
+|--------|------------------------|----------------------------------|
+| Distribution | Uniform random × constant | Log-normal (action-specific μ,σ) |
+| Burst model | None | Pareto (α=1.5, scale=2.0, 5% prob) |
+| Circadian | No | Sinusoidal (peak 14:00, trough 04:00) |
+| Action profiles | Single default | 8 action-specific profiles |
+| Min spacing | None | Enforced (500ms floor) |
+
+### When to Use Which
+
+- **Mathematical constants**: Quick anti-throttle waits, API polling, simple automation
+- **Human-like timer**: Social media automation, messaging, any behavior that must pass human heuristic checks
+
+The Reddit worker pattern is now available as a reference implementation in `scripts/irrational_timer_advanced.py`.
+
 ## Statistics Example
 
 ```

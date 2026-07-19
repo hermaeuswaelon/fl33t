@@ -1,7 +1,9 @@
 ---
 name: firecrawl
 description: |
-  Search, scrape, and interact with the web via the Firecrawl CLI. Use this skill whenever the user wants to search the web, find articles, research a topic, look something up online, scrape a webpage, grab content from a URL, get data from a website, crawl documentation, download a site, or interact with pages that need clicks or logins. Also use when they say "fetch this page", "pull the content from", "get the page at https://", or reference external websites. This provides real-time web search with full page content and interact capabilities — beyond what Claude can do natively with built-in tools. Do NOT trigger for local file operations, git commands, deployments, or code editing tasks.
+  Search, scrape, and interact with the web via the Firecrawl CLI. Use this skill whenever the user wants to search the web, find articles, research a topic, look something up online, scrape a webpage, grab content from a URL, get data from a website, crawl documentation, download a site, parse a local file (PDF/DOCX/XLSX), discover URLs on a site, or interact with pages that need clicks or logins. Also use when they say "fetch this page", "pull the content from", "get the page at https://", or reference external websites. This provides real-time web search with full page content and interact capabilities — beyond what Claude can do natively with built-in tools. Do NOT trigger for local file operations, git commands, deployments, or code editing tasks.
+
+  This base skill now CONSOLIDATES the following individual CLI commands directly: firecrawl-scrape, firecrawl-search, firecrawl-crawl, firecrawl-map, and firecrawl-parse. See the "Absorbed Skills" section below for their full documentation. For domain-specific workflows (research, ops, build, monitor), load the appropriate umbrella skill: firecrawl-research, firecrawl-ops, firecrawl-build, or firecrawl-monitor.
 allowed-tools:
   - Bash(firecrawl *)
   - Bash(npx firecrawl *)
@@ -208,21 +210,123 @@ Use `modes: ["json", "git-diff"]` for **mixed mode**: you get both `diff.json` (
 - `search --scrape` already fetches full page content. Don't re-scrape those URLs.
 - Check `.firecrawl/` for existing data before fetching again.
 
-## When to Load References
+## Absorbed Skills — Consolidated into this Base Skill
 
-- **Searching the web or finding sources first** -> [firecrawl-search](../firecrawl-search/SKILL.md)
-- **Scraping a known URL** -> [firecrawl-scrape](../firecrawl-scrape/SKILL.md)
-- **Finding URLs on a known site** -> [firecrawl-map](../firecrawl-map/SKILL.md)
-- **Bulk extraction from a docs section or site** -> [firecrawl-crawl](../firecrawl-crawl/SKILL.md)
-- **AI-powered structured extraction from complex sites** -> [firecrawl-agent](../firecrawl-agent/SKILL.md)
-- **Clicks, forms, login, pagination, or post-scrape browser actions** -> [firecrawl-interact](../firecrawl-interact/SKILL.md)
-- **Downloading a site to local files** -> [firecrawl-download](../firecrawl-download/SKILL.md)
-- **Parsing a local file (PDF, DOCX, XLSX, HTML, etc.)** -> [firecrawl-parse](../firecrawl-parse/SKILL.md)
-- **Detecting content changes on a website and getting notified by webhook or email (pricing, jobs, posts, docs, status pages, anything ongoing)** -> [firecrawl-monitor](../firecrawl-monitor/SKILL.md)
+The following individual Firecrawl CLI skills have been consolidated directly into this base skill. Their full command reference, options, and usage tips are documented below in the [Consolidated CLI Commands](#consolidated-cli-commands) section.
+
+### When to Use Each Sub-Command
+
+| Need | Command | When |
+|------|---------|------|
+| Find pages on a topic | `search` | No specific URL yet |
+| Get a page's content | `scrape` | Have a URL, page is static or JS-rendered |
+| Find URLs within a site | `map` | Need to locate a specific subpage |
+| Bulk extract a site section | `crawl` | Need many pages (e.g., all /docs/) |
+| Parse a local file (PDF, DOCX, etc.) | `parse` | File on disk — not a URL |
+
+### Consolidated CLI Commands
+
+#### firecrawl search
+
+Web search with optional content scraping. Returns search results as JSON, optionally with full page content.
+
+```bash
+# Basic search
+firecrawl search "your query" -o .firecrawl/result.json --json
+
+# Search and scrape full page content from results
+firecrawl search "your query" --scrape -o .firecrawl/scraped.json --json
+
+# News from the past day
+firecrawl search "your query" --sources news --tbs qdr:d -o .firecrawl/news.json --json
+```
+
+Options: `--limit <n>`, `--sources <web,images,news>`, `--categories <github,research,pdf>`, `--tbs <qdr:h|d|w|m|y>`, `--location`, `--country <code>`, `--scrape`, `--scrape-formats`, `-o, --output <path>`, `--json`.
+
+**Search feedback (refunds 1 credit):** After using a search result, send structured feedback in the background:
+
+```bash
+SEARCH_ID=$(jq -r '.id' .firecrawl/search-react-hooks.json)
+firecrawl search-feedback "$SEARCH_ID" --rating good --valuable-sources '[{"url":"https://react.dev/reference/react/hooks","reason":"Authoritative"}]' --missing-content '[{"topic":"useDeferredValue example"},{"topic":"Server Components hooks"}]' --silent &
+```
+
+Opt out: `export FIRECRAWL_NO_SEARCH_FEEDBACK=1`.
+
+#### firecrawl scrape
+
+Scrape one or more URLs. Returns clean, LLM-optimized markdown.
+
+```bash
+# Basic markdown extraction
+firecrawl scrape "<url>" -o .firecrawl/page.md
+
+# Main content only
+firecrawl scrape "<url>" --only-main-content -o .firecrawl/page.md
+
+# Multiple URLs (concurrent)
+firecrawl scrape https://example.com https://example.com/blog
+
+# Ask a question about the page
+firecrawl scrape "https://example.com/pricing" --query "What is the enterprise plan price?"
+```
+
+Options: `-f, --format <formats>`, `-Q, --query <prompt>`, `-H`, `--only-main-content`, `--wait-for <ms>`, `--include-tags <tags>`, `--exclude-tags <tags>`, `--redact-pii`, `-o, --output <path>`.
+
+#### firecrawl map
+
+Discover URLs on a site. Use `--search` to find a specific page.
+
+```bash
+# Find a specific page on a large site
+firecrawl map "<url>" --search "authentication" -o .firecrawl/filtered.txt
+
+# Get all URLs
+firecrawl map "<url>" --limit 500 --json -o .firecrawl/urls.json
+```
+
+Options: `--limit <n>`, `--search <query>`, `--sitemap <include|skip|only>`, `--include-subdomains`, `--json`, `-o, --output <path>`.
+
+#### firecrawl crawl
+
+Bulk extract content from a website.
+
+```bash
+# Crawl a docs section
+firecrawl crawl "<url>" --include-paths /docs --limit 50 --wait -o .firecrawl/crawl.json
+
+# Full crawl with depth limit
+firecrawl crawl "<url>" --max-depth 3 --wait --progress -o .firecrawl/crawl.json
+```
+
+Options: `--wait`, `--progress`, `--limit <n>`, `--max-depth <n>`, `--include-paths <paths>`, `--exclude-paths <paths>`, `--delay <ms>`, `--max-concurrency <n>`, `--pretty`, `-o, --output <path>`.
+
+#### firecrawl parse
+
+Turn a local document (PDF, DOCX, XLSX, HTML, etc.) into clean markdown.
+
+```bash
+firecrawl parse ./paper.pdf -o .firecrawl/paper.md
+firecrawl parse ./paper.pdf -S -o .firecrawl/paper-summary.md        # AI summary
+firecrawl parse ./paper.pdf -Q "What are the main conclusions?" -o .firecrawl/paper-qa.md
+```
+
+Options: `-S, --summary`, `-Q, --query <prompt>`, `-o, --output <path>`, `-f, --format <fmt>`, `--timeout <ms>`, `--timing`.
+
+---
+
+## When to Load Specific Umbrella Skills
+
+The following Firecrawl skills have been consolidated into umbrella skills. Load them for their specific domains:
+
+- **AI-powered structured extraction from complex sites** -> [firecrawl-agent](../../firecrawl-monitor/SKILL.md) (absorbed into firecrawl-monitor umbrella)
+- **Clicks, forms, login, pagination, or post-scrape browser actions** -> [firecrawl-interact](../../firecrawl-monitor/SKILL.md) (absorbed into firecrawl-monitor umbrella)
+- **Downloading a site to local files** -> [firecrawl-download](../../firecrawl-monitor/SKILL.md) (absorbed into firecrawl-monitor umbrella)
+- **Detecting content changes and getting notified by webhook or email** -> [firecrawl-monitor](../../firecrawl-monitor/SKILL.md) umbrella
+- **Deep research reports and literature reviews** -> [firecrawl-research](../../firecrawl-research/SKILL.md) umbrella
+- **Lead gen, SEO audits, QA, competitive intel, market research, demo walkthroughs, dashboard reporting** -> [firecrawl-ops](../../firecrawl-ops/SKILL.md) umbrella
+- **Integrating Firecrawl into an app (SDK, API, env setup)** -> [firecrawl-build](../../firecrawl-build/SKILL.md) umbrella
 - **Install, auth, or setup problems** -> [rules/install.md](rules/install.md)
 - **Output handling and safe file-reading patterns** -> [rules/security.md](rules/security.md)
-- **Integrating Firecrawl into an app, adding `FIRECRAWL_API_KEY` to `.env`, or choosing endpoint usage in product code** -> use the `firecrawl-build` skills (already installed alongside this CLI skill)
-- **Producing Firecrawl-powered deliverables such as research briefs, SEO audits, QA reports, lead lists, knowledge bases, or design-system extraction** -> use the `firecrawl-workflows` skills (already installed alongside this CLI skill). These skills infer from context first and ask only short blocking questions when needed.
 
 ## Output & Organization
 

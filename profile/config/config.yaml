@@ -1,98 +1,203 @@
-model:
-  base_url: moa://local
-  default: default
-  max_tokens: 64000
-  provider: moa
-  api_mode: chat_completions
-  reasoning_effort: low
-  max_output_tokens: 4096
-display:
-  skin: poseidon
-  tui_compact: false
-  timestamps: true
-moa:
-  presets:
-    default:
-      reference_models: &id001
-        - provider: deepseek
-          model: deepseek-reasoner
-        - provider: togetherai
-          model: Qwen/Qwen3.5-9B
-      aggregator:
-        provider: deepseek
-        model: deepseek-reasoner
-      fanout: per_iteration
-      enabled: true
-    grind:
-      reference_models:
-        - provider: deepseek
-          model: deepseek-reasoner
-        - provider: deepseek
-          model: deepseek-v4-flash
-      aggregator:
-        provider: deepseek
-        model: deepseek-v4-flash
-      fanout: sequential
-      enabled: true
-      reference_temperature: 0.1
-      aggregator_temperature: 0.1
-      reference_max_tokens: 4000
-  aggregator:
-    model: deepseek-reasoner
-    provider: deepseek
+_config_version: 33
+agent:
+  gateway_timeout: 600
+  max_turns: 60
+  reasoning_effort: ultra
+compression:
+  abort_on_summary_failure: false
+  decay_rate_multiplier: 1.5
   enabled: true
-  fanout: per_iteration
-  max_tokens: 8000
-  reference_models: *id001
-  default_preset: default
-  reference_max_tokens: 4000
-  aggregator_max_tokens: 8000
-  reference_temperature: 0.1
-  aggregator_temperature: 0.1
-skills:
-  default: '["thotheauphis-sovereign-prompt","thotheauphis-sms-memory","thotheauphis-sms-persistence","thotheauphis-memory-system-alpha","thotheauphis-semayasa-hermes","ctx-curation","ares-dual-offload","ares-omega-daemon","ares-rtacc","ares-rtacc-cli","ares-rtacc-engine","hermes-executor","fleet-integration","compress-tac","ares-parameter-control","ares-forge-vault","aethelgard-fleet-memory","ares-alpha-daemon","bromium-control"]'
+  protect_first_n: 1
+  protect_last_n: 5
+  target_ratio: 0.382
+  threshold: 0.85
+  tier1_5_threshold: 88000
+  tier1_threshold: 50000
+  tier2_threshold: 108000
+  worker_tier1_5_ratio: 0.6
+  worker_tier1_5_threshold: 24000
+  worker_tier1_ratio: 0.5
+  worker_tier1_threshold: 16000
+  worker_tier2_threshold: 32000
+custom_providers:
+- api_key_env: TOGETHER_API_KEY
+  api_mode: chat_completions
+  base_url: https://api.together.xyz/v1
+  grind:
+    aggregator:
+      model: deepseek-reasoner
+      provider: deepseek
+    aggregator_max_tokens: 32000
+    aggregator_temperature: 0.1
+    enabled: true
+    fanout: sequential
+    reference_max_tokens: 32000
+    reference_models:
+    - model: nvidia/nemotron-3-ultra-550b-a55b
+      provider: together
+    - model: deepseek-reasoner
+      provider: deepseek
+    reference_temperature: 0.3
+  key_env: TOGETHER_API_KEY
+  name: togetherai
+delegation:
+  model: LFM2.5-1.2B-Nova-Function-Calling.Q6_K.gguf
+  parameters: ''
+  provider: ''
+  reasoning_effort: none
+  base_url: http://127.0.0.1:8080/v1
+  api_key: lfm-local-key
+  api_mode: chat_completions
+  request_overrides:
+    temperature: 0.1
+    top_k: 20
+    top_p: 0.1
+    frequency_penalty: 0.5
+    presence_penalty: 0.4
+    repetition_penalty: 1.2
+    max_tokens: 500
+display:
+  show_cost: false
+  show_reasoning: false
+  skin: poseidon
+  timestamps: false
+  tool_progress: minimal
+  tui_compact: true
 gateway:
   allow_all_users: false
   dm_policy: open
   group_policy: open
-_config_version: 33
+mcp_servers:
+  aethelgard-fleet:
+    args:
+    - /home/craig/projects/aethelgard/mcp/aethelgard_mcp_server.py
+    command: python3
+    connect_timeout: 5
+    timeout: 30
+moa:
+  aggregator_frequency_penalty: 0.0
+  aggregator_max_tokens: 8000
+  aggregator_presence_penalty: 0.0
+  aggregator_repetition_penalty: 1.0
+  aggregator_temperature: 1.2
+  aggregator_top_k: 200
+  aggregator_top_p: 0.98
+  default_preset: default
+  presets:
+    default:
+      aggregator:
+        context_limit: 32000
+        frequency_penalty: 0.0
+        max_tokens: 8000
+        model: deepseek-reasoner
+        presence_penalty: 0.0
+        provider: deepseek
+        repetition_penalty: 1.0
+        role: creative_aggregator
+        temperature: 1.2
+        top_k: 200
+        top_p: 0.98
+      aggregator_context_soft: 28000
+      enabled: true
+      fanout: per_iteration
+      reference_max_tokens: 1500
+      reference_models:
+      - context_limit: 32000
+        delay_seconds: 0
+        frequency_penalty: 0.5
+        max_tokens: 1500
+        model: deepseek-reasoner
+        presence_penalty: 0.4
+        provider: deepseek
+        repetition_penalty: 1.2
+        role: strict_executor
+        temperature: 0.1
+        top_k: 20
+        top_p: 0.1
+      - context_limit: 32000
+        delay_seconds: 6
+        frequency_penalty: 0.5
+        max_tokens: 4096
+        model: qwen/qwen-2.5-coder-32b-instruct
+        presence_penalty: 0.4
+        provider: openrouter
+        repetition_penalty: 1.2
+        role: strict_executor
+        temperature: 0.1
+        top_k: 20
+        top_p: 0.1
+    grind:
+      aggregator:
+        context_limit: 32000
+        frequency_penalty: 0.6
+        max_tokens: 2000
+        model: deepseek-v4-flash
+        presence_penalty: 0.5
+        provider: deepseek
+        repetition_penalty: 1.3
+        temperature: 0.05
+        top_k: 10
+        top_p: 0.05
+      enabled: true
+      fanout: user_turn
+      reference_max_tokens: 800
+      reference_models:
+      - context_limit: 32000
+        delay_seconds: 0
+        frequency_penalty: 0.6
+        max_tokens: 800
+        model: deepseek-reasoner
+        presence_penalty: 0.5
+        provider: deepseek
+        repetition_penalty: 1.3
+        temperature: 0.05
+        top_k: 10
+        top_p: 0.05
+  reference_frequency_penalty: 0.5
+  reference_max_tokens: 1500
+  reference_presence_penalty: 0.4
+  reference_repetition_penalty: 1.2
+  reference_temperature: 0.1
+  reference_top_k: 20
+  reference_top_p: 0.1
+model:
+  api_mode: chat_completions
+  base_url: https://api.deepseek.com/v1
+  context_window_size: 128000
+  default: nvidia/nemotron-3-ultra-550b-a55b:free
+  frequency_penalty: 0.1
+  max_output_tokens: 16000
+  max_tokens: 32000
+  presence_penalty: 0.1
+  provider: openrouter
+  reasoning_effort: low
+  repetition_penalty: 1.05
+  temperature: 0.7
+  top_k: 144
+  top_p: 0.95
+onboarding:
+  seen:
+    busy_input_prompt: true
+    openclaw_residue_cleanup: true
+    tool_progress_prompt: true
 platforms:
   telegram:
     bot_token_from_env: TELEGRAM_BOT_TOKEN
     enabled: true
 plugins:
-  disabled: []
-  enabled: true
-mcp_servers:
-  aethelgard-fleet:
-    command: python3
-    args:
-      - /home/craig/projects/aethelgard/mcp/aethelgard_mcp_server.py
-    timeout: 60
-    connect_timeout: 15
-custom_providers:
-  - name: togetherai
-    base_url: https://api.together.xyz/v1
-    api_key_env: TOGETHER_API_KEY
-    api_mode: chat_completions
-    grind:
-      reference_models:
-        - provider: deepseek
-          model: deepseek-reasoner
-        - provider: deepseek
-          model: deepseek-v4-flash
-      aggregator:
-        provider: deepseek
-        model: deepseek-v4-flash
-      fanout: sequential
-      enabled: true
-      reference_temperature: 0.1
-      aggregator_temperature: 0.1
-      reference_max_tokens: 4000
-onboarding:
-  seen:
-    busy_input_prompt: true
-compression:
-  enabled: true
-  threshold: 0.3
-  target_ratio: 0.12
+  disabled:
+  - image_gen/xai
+  - video_gen/xai
+  enabled:
+  - gated-context
+show_cost: true
+skills:
+  default: '["thotheauphis-sovereign-prompt","thotheauphis-sms-memory","gated-context-system"]'
+  disabled: '["aethelgard-fleet","aethelgard-fleet-memory","aethelgard-pascal-plugins","aethelgard-pascal-sensors","aethelgard-redteam-pascal","ai-agent-web-portal","ares-browser-research","ares-pascal-fleet","compress-tac","ctx-curation","fleet-integration","mixture-of-agents"]'
+terminal:
+  timeout: 120
+timestamps: true
+tool_output:
+  max_bytes: 50000
+  max_line_length: 10000
+  max_lines: 2000

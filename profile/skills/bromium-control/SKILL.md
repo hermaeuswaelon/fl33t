@@ -1,7 +1,7 @@
 ---
 name: bromium-control
 description: "Control the Bromium Dual-Citizen Browser via Unix socket IPC — navigate, evaluate JS, bridge extensions, read page titles, manage tabs, accessibility scanning."
-version: 3.2.0
+version: 3.2.2
 author: Thotheauphis
 platforms: [linux]
 tags: [bromium, browser, ipc, extensions, aethelgard, accessibility]
@@ -348,20 +348,142 @@ Five modes accessible from toolbar or F2/Tab keyboard shortcuts:
 4. **LARGE** — Large-button accessibility mode
 
 Additional features:
-- 🎤 Voice toggle → `bromium-voice.py --oneshot` listener
+- 🎤 Voice toggle → text input dialog → `bromium-voice.py --say` (not mic-based; see Pitfalls)
 - 🤖 AI command bar → English instruction → browser automation
 - ⚡ Macro quick-buttons → one-tap complex workflows
-- 🔊 TTS auditory feedback (espeak)
+- 🔊 TTS auditory feedback (espeak → WAV → aplay through ALSA devices)
 - Live health monitoring (5s refresh)
 
-## Fast Eval Pattern (get_eval polling)
+### Portal v4 — Glassmorphism + AOL Oldschool Redesign (July 2026)
 
-**Replace 2-second fixed sleeps with sub-100ms polling.** The key architectural change:
+The v4 portal (`bromium-portal-v4.py`) implements a sovereign "system of the future" aesthetic:
 
-1. **Pascal: `ExecuteJS` resets `FEvalResultReady := False`** before executing JS (line 393 of `ucontrollerbrowser.pas`). This makes `get_eval` IPC return immediately after `DoTitleChange` stores the result.
-2. **Python: poll `get_eval` in 50ms intervals** instead of sleeping 1.5-2s for `get_title`.
+| Layer | Style | Contrast |
+|-------|-------|----------|
+| Background | Dark radial gradient (#0a0e17 → #05080e) | — |
+| Panels | Glassmorphism: rgba(20,28,44,0.85) + blur(12px) + 1px border | WCAG AA on dark |
+| Text | #e8edf5 on panels, #8ab4f8 on headers | 7.2:1 minimum |
+| Accents | #00d4aa (teal), #ff6b6b (coral), #ffd93d (amber) | Color-blind safe |
+| Borders | 1px solid rgba(255,255,255,0.08) | Subtle separation |
 
-```python
+**UI Components:**
+- **AOL-style Menu Bar** (File, Edit, View, Go, Tools, Window, Help) — native tk.Menu themed
+- **Toolbar** — Connect/Disconnect, New Tab, Reload, Home, Back/Forward, Voice, TTS, AI, Predictive Text
+- **Tab Bar** — Drag-reorder, close buttons, favicon placeholder, title truncation
+- **Sidebar** — Minilists (irrational timers), Scrapers, Cayce Readings, Logs, Settings
+- **Content Area** — CEF embed placeholder + Welcome screen with quick actions
+- **Status Bar** — Live CPU/Memory (psutil, 5s), Connection status, Latency, Action queue
+
+**Quick Actions on Welcome Screen:**
+- 🔗 Connect Browser (starts Bromium CEF)
+- 🤖 AI Agent Mode (MOA: 2 strict refs + 1 creative aggregator)
+- 🔴 Reddit Worker (PRAW automation with irrational timers)
+- 📘 Facebook Worker (Bromium tab automation)
+- 🕷️ Scraping Pipeline (anti-bot countermeasures)
+- 🔮 Cayce Readings Finder (semantic search)
+- ⚙️ Settings
+
+**Integration Points:**
+- Reddit Worker: `--add-user`, `--send-message`, `--post`, `--scrape-subreddit`, `--start-worker`
+- MOA Agent Mode: Uses Hermes MOA preset `default` (configured in `~/.hermes/profiles/thotheauphis/config.yaml`)
+- Bromium IPC: All browser actions via `/tmp/aethelgard_cef.sock`
+
+### Pitfalls
+
+- **Voice button uses `--say` not `--listen`** — no microphone/Whisper dependency. Opens a text dialog, then calls `bromium-voice.py --say "text"`.
+- **TTS uses espeak + ALSA** — tries `hw:1,0` (analog) → `hw:0,3` (HDMI) → default. No PulseAudio/PipeWire dependency.
+- **Portal close button** — uses `WM_DELETE_WINDOW` protocol calling `root.quit()` + `sys.exit(0)`. Ctrl+Q routes through same handler.
+- **Browser must stay dead** — stop `dual-citizen-watchdog.service` or it respawns CEF in ~5-8s.
+- **Glassmorphism on X11** — `tkinter` has no native backdrop blur. Uses solid rgba background + border. For true blur, need compositor (picom) + custom frame.
+- **Drag-reorder tabs** — implemented via `<Button-1>`/`<B1-Motion>`/`<ButtonRelease-1>` on tab buttons. Track index, swap in `self.tabs` list, rebuild bar.
+
+## Reddit Worker Integration (New — July 2026)
+
+The Bromium Portal v4 integrates a **PRAW-based Reddit automation worker** with irrational timers for human-like behavior:
+
+### Worker Module
+**Path:** `/home/craig/.local/bin/reddit-worker.py`
+
+### Capabilities
+| Feature | Description |
+|---------|-------------|
+| **Messaging** | Send PMs to users with human-like delays (30-120s between messages) |
+| **Posting** | Submit posts to subreddits (text, link, or crosspost) |
+| **Commenting** | Comment on submissions and reply to comments |
+| **Voting** | Upvote/downvote submissions and comments |
+| **Scraping** | Subreddit posts (hot/new/top/rising), user activity, search, post comments |
+| **Minilists** | SQLite-backed priority queues with cooldown tracking per target |
+| **Background Worker** | Autonomous processing of minilist items with configurable actions |
+
+### Irrational Timer Profiles
+The Reddit worker uses the **Advanced Human-Like Timer** (see `mathematical-timers/scripts/irrational_timer_advanced.py`):
+
+| Action Type | Log-Normal (μ, σ) | Description |
+|-------------|-------------------|-------------|
+| `message` | 1.8, 0.4 | Sending PMs — slow, careful |
+| `comment` | 1.2, 0.3 | Public comments — moderate |
+| `reply` | 1.0, 0.3 | Replies — slightly faster |
+| `post` | 2.5, 0.5 | Creating posts — slowest |
+| `upvote` | 0.5, 0.2 | Quick reactions |
+| `scrape` | 0.8, 0.2 | Reading — fast |
+| `global` | 2.0, 0.5 | Between actions |
+
+**Plus:** Pareto bursts (5% chance, α=1.5, scale=2.0) + Circadian rhythm (peak 14:00, trough 04:00)
+
+### Portal Integration
+
+**Sidebar Minilists Panel** shows Reddit targets with:
+- Target type (user/subreddit/post)
+- Priority (0-100, higher = more urgent)
+- Cooldown remaining
+- Actions/hour rate limit
+- Last action timestamp
+
+**Quick Actions (Welcome Screen):**
+- 🔴 Reddit Worker → launches `reddit-worker.py` CLI or starts background worker
+- Configure OAuth credentials via `--add-account`
+
+### CLI Quick Reference
+
+```bash
+# Add account (OAuth)
+python3 reddit-worker.py --add-account --username USER --client-id ID --client-secret SECRET --refresh-token TOKEN
+
+# Add targets to minilist
+python3 reddit-worker.py --add-user "target_user" --list-name "outreach" --priority 50
+python3 reddit-worker.py --add-subreddit "target_sub" --list-name "monitor" --priority 30
+
+# List targets
+python3 reddit-worker.py --list-targets --list-name "outreach"
+
+# One-off actions
+python3 reddit-worker.py --send-message "user" "Subject" "Body"
+python3 reddit-worker.py --post "subreddit" "Title" "Body"
+python3 reddit-worker.py --comment "post_id" "Comment text"
+python3 reddit-worker.py --scrape-subreddit "subreddit" "hot"
+python3 reddit-worker.py --scrape-user "username"
+
+# Background worker
+python3 reddit-worker.py --start-worker
+python3 reddit-worker.py --stop-worker
+python3 reddit-worker.py --worker-status
+```
+
+### Database
+**Path:** `~/.local/share/bromium/reddit_worker.db`
+
+Tables: `accounts`, `minilist`, `action_log`
+
+### Configuration
+**Path:** `~/.config/bromium/reddit_config.json`
+
+```json
+{
+  "global_cooldown": 2.0,
+  "max_concurrent_actions": 1,
+  "default_minilist": "default"
+}
+```
 def fast_eval(code, tab_id=1, max_polls=40):
     """Execute JS and poll get_eval at 50ms until result ready. Typical: 50-150ms."""
     sock_cmd("execute_javascript", code=code, tab_id=tab_id)
@@ -470,6 +592,7 @@ def parse_ipc_response(raw_text):
 | `references/portal-session3-features.md` | Page Elements tab, predictive text, dwell indicator, new shortcuts |
 | `references/fast-eval-pattern.md` | execute_javascript + get_eval polling, JSON parsing nuances |
 | `references/redteam-suite.md` | Bromium Red Team Suite — CEF-level recon, credential sweep, network interceptor, native clicks |
+| `references/portal-wiring-session.md` | TTS, voice, close button, watchdog wiring from v3.2.1 session |
 | `/tmp/aethelgard_cef.sock` | IPC socket |
 | `~/bromium-extractions/` | Saved page extractions (JSON) |
 
@@ -549,28 +672,63 @@ See `references/redteam-suite.md` for modules, CLI commands, and architecture.
 
 ## Pitfalls
 
-- **First tab (tab 1) often won't load pages** — The Bromium browser's initial tab frequently stays on `about:blank` after a `navigate` call. **Always create a new tab** with `create_tab` IPC (or `--create-tab`), then navigate on the new tab. The new tab's ID will be ≥ 2. This is a CEF initialization ordering issue — the first tab's browser context isn't fully ready for navigation at startup.
+### Portal Tkinter — Widget Creation Order
+
+**`_sb_mode` accessed before created.** `_build_accessibility_toolbar()` calls `_update_mode_buttons()`, which does `self._sb_mode.configure(...)`. But `_sb_mode` is created in `_build_status_bar()`, which runs LATER in `__init__`. Fix: move `self._update_mode_buttons()` from the toolbar builder to `__init__` after `_build_status_bar()`.
+
+```python
+# __init__ — correct ordering
+self._build_menu_bar()
+self._build_accessibility_toolbar()
+self._build_main_layout()
+self._build_status_bar()
+self._update_mode_buttons()  # moved here: needs _sb_mode from status bar
+```
+
+**grid/pack geometry manager mixing.** `_refresh_macro_grid()` called `btn.grid(row, col, ...)` inside `self._macro_grid` — a frame packed into `self.macro_frame`. Tkinter raises: `TclError: cannot use geometry manager grid inside ...frame which already has slaves managed by pack`. Fix: convert to all-pack layout using per-row sub-frames:
+
+```python
+row_frame = None
+for i, name in enumerate(macros):
+    if i % 3 == 0:
+        row_frame = tk.Frame(self._macro_grid, bg=DARK_BG)
+        row_frame.pack(pady=2)
+    btn = tk.Button(row_frame, text=name.upper(), ...)
+    btn.pack(side=tk.LEFT, padx=4)
+```
+
+**Rule:** Never mix `pack` and `grid` for siblings sharing the same parent. Pick one geometry manager per parent frame — pack for linear flows, grid for tables.
+
+### Portal TTS & Voice
+- **TTS espeak → ALSA pipeline.** Portal's `speak_async()` generates a WAV via espeak then plays via `aplay` through ALSA (`hw:1,0` analog → `hw:0,3` HDMI → `default`). All exceptions caught silently. To test: `espeak "test" -w /tmp/t.wav && aplay -D hw:1,0 /tmp/t.wav`. Uses `tempfile.mktemp(suffix=".wav")` — ensure `import tempfile` in portal imports.
+- **Voice button is text-dialog, not mic.** `_start_voice_listener` pops `tk.simpledialog.askstring()` → `bromium-voice.py --say`. Not `--oneshot` (mic) because `openai-whisper` is too heavy (~2GB with torch) for mid-session install. To add mic: `pip install openai-whisper` and revert `_start_voice_listener` to `--oneshot` path.
+- **`bromium-voice.py --oneshot` needs whisper.** Falls back to `speech_recognition` (Google API, needs pulseaudio + internet).
+
+### Portal Close & Browser Restart
+- **X button does nothing without protocol handler.** Tkinter's `WM_DELETE_WINDOW` protocol must be set: `self.root.protocol("WM_DELETE_WINDOW", self._on_close)`. The handler must call `self.root.quit()` + `sys.exit(0)` — `root.quit()` alone stops the mainloop but doesn't exit the process.
+- **Watchdog restarts killed browser.** `dual-citizen-watchdog.service` auto-restarts the bromium binary within ~5-8s. To kill the browser permanently: `systemctl --user stop dual-citizen-watchdog.service` first, then kill the bromium/cef_controller PIDs. Clean up the socket: `rm -f /tmp/aethelgard_cef.sock`.
+
+### Portal Performance Monitor
+- **Live CPU/MEM meter added to status bar.** `_build_status_bar()` creates `self._sb_perf` label, right-aligned before health indicator. `_update_perf()` polls `psutil.virtual_memory()` + `psutil.cpu_percent(interval=0)` every 5s via `self.root.after(5000, ...)`. Requires `psutil` package (7.1.0 installed).
+- **Hermes CLI cost/timestamps.** Enable performance output in terminal: `hermes config set show_cost true && hermes config set timestamps true`.
+
+### Tab Management
+- **First tab (tab 1) often won't load pages** — CEF init ordering issue. Always create a new tab first, then navigate on the new tab (ID ≥ 2).
 
   ```python
-  # ✅ Correct: create tab first, then navigate
   result = sock_cmd("create_tab")
   new_tab_id = result.get("tab_id", 2)
   sock_cmd("navigate", url="https://example.com", tab_id=new_tab_id)
-
-  # ❌ Wrong: navigating tab 1 will likely stay on about:blank
-  sock_cmd("navigate", url="https://example.com", tab_id=1)
   ```
 
-- **`get_eval` vs `get_title`** — After `execute_javascript`, `get_eval` returns immediately (via `FEvalResult`). `get_title` reads the page's current title which may have changed since the JS ran. **Prefer `get_eval` for JS results.** Only use `get_title` when you need the page's actual title (not a JS-set one).
+- **`get_eval` vs `get_title`** — `get_eval` returns immediately (via `FEvalResult`). `get_title` reads page's actual title. Prefer `get_eval` for JS results.
 
-- **`list_extensions` uses different escaping** — Unlike other IPCs, `list_extensions` wraps its response in `\\\"` (double-escaped quotes). Always use the safe parsing pattern above, not a naive `json.loads()`.
+### JSON & JS
+- **`list_extensions` uses double-escaped quotes** (`\\\\\\\"`). Use safe parsing pattern above, not naive `json.loads()`.
+- **Auto-inject JS must avoid ES6+** — Pascal string concat can't handle backticks, `=>`, `?.`. Keep to ES5: `function()`, `indexOf()`, `Array.from()`. Test after Pascal rebuild.
+- **Page nav destroys JS context.** DoLoadEnd re-injects, but ~100ms window where `__bromiumScan` unavailable. Use direct `querySelectorAll` JS during that window.
+- **`about:blank` = not loaded** — Poll title in loop. Never fixed `sleep()`.
 
-- **Auto-inject JS must avoid modern JS features** — Pascal string concatenation in `DoLoadEnd` can't handle backticks, `=>`, or `?.`. Keep auto-injected JS to ES5 idioms: `function()`, `indexOf()`, `Array.from()`. Test after every Pascal rebuild.
-
-- **Page nav destroys JS context** — Navigating to a new page destroys all injected JS. The DoLoadEnd auto-injection re-injects it, but there's a brief window (~100ms) between navigation and DoLoadEnd where `__bromiumScan` is unavailable. If you call `get_elements` during this window, use the direct `querySelectorAll` JS (which doesn't depend on the scan API).
-
-- **`about:blank` = not loaded** — Poll title in a loop after navigate. Never use fixed `sleep()`.
-
-- **Rebuild required after Pascal changes** — `fpc` compile (1.5s), restart browser. Always check `cef_controller` is the same binary: `cp bromium cef_controller`.
-
-- **`EncodeJSON` vs manual escaping** — Pascal's `EncodeJSON` handles most cases. For complex inline JS, prefer `ExecuteJS` with well-tested JS strings rather than Pascal string concatenation.
+### Build & Deploy
+- **Rebuild required after Pascal changes** — `fpc` compile (1.5s), restart browser. Ensure `cef_controller` same binary: `cp bromium cef_controller`.
+- **`EncodeJSON` vs manual escaping** — Pascal's `EncodeJSON` handles most cases. For complex inline JS, prefer `ExecuteJS` with well-tested strings over Pascal concatenation.

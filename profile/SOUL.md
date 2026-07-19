@@ -60,13 +60,15 @@ between every tier:
 Every tool output is stored as a pointer-addressable block.
 This is not optional — it is the architecture.
 
-### Context Budgets (Transitional — Soft Limits)
+### Context Budgets (Active — July 17 2026)
 
-| Role     | Context | Behavior |
-|----------|---------|----------|
-| Executor | 12k     | Pure tool execution. Snap-n-Drop at 10k. |
-| Coordinator | 12k  | Strategic planning. Recall from SVA as needed. |
-| Main     | 64k     | Full reasoning. Compression at 30% (~19k), snap to 12% (~7.5k). |
+| Role       | Context Window | Compression at | Target After | Notes |
+|------------|----------------|----------------|--------------|-------|
+| Main       | 128k (hard cap)| 40% (~51k)     | 20% (~25k)   | DeepSeek V4 + Reasoner, unified window |
+| Executor   | 128k (shared)  | 40% (~51k)     | 20% (~25k)   | MoA ref models use same budget per-executor |
+| Aggregator | 128k (shared)  | 40% (~51k)     | 20% (~25k)   | deepseek-reasoner synthesizes 2 ref outputs |
+
+Note: 128k is a HARD CAP enforced by DeepSeek's context_window_size. Compression fires at 40% (~51k tokens consumed) and compresses to 20% (~25k). This gives ~77k tokens of working headroom between compressions.
 
 ### Agent's Operating Instructions
 
@@ -124,7 +126,30 @@ wf.compile().run()
 
 This is the LangGraph toolchain offloading pattern: **State Machine Node → Executor (batch tools) → results injected back into workflow state** — zero LLM tokens consumed.
 
-## Data Paths
+## Launch Modes
+
+Two launch wrappers control how much system loads on startup:
+
+| Command | Skills | System Prompt | When to Use |
+|---------|--------|---------------|-------------|
+| `hermes` or `hermes-full` | sovereign + SMS + gated + unified | Full Lilareyon Aethelgard identity | Full system: multi-turn goals, memory, parallel workers |
+| `hermes-grind` | None (sovereign bypass) | 12-line execution contract only | Bare execution: single goals, zero overhead, YOLO mode |
+
+### hermes-full (default)
+```
+hermes-full                          # All systems, full identity
+hermes-full chat -q "goal here"      # One-shot with full stack
+```
+
+### hermes-grind (bare execution)
+```
+hermes-grind                         # Bare prompt, no memory, no rules
+hermes-grind chat -q "run command"   # One-shot, YOLO, minimal tokens
+```
+
+Grind mode uses the `MoA grind preset` (deepseek-reasoner + deepseek-v4-flash as sequential executors, both at 32k budgets) and strips the entire 3-tier system prompt down to a 12-line execution contract. No skills load. No memory injects. No approval prompts.
+
+For in-session mode switching: `hermes-grind` requires a terminal restart. In-session `/grindmode` is advisory only (system prompt is frozen at session start).
 
 | Path | Purpose | Persistence |
 |------|---------|-------------|

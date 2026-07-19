@@ -13,7 +13,7 @@ Central integration singleton that connects all sovereign systems:
 Every subsystem auto-detects availability and degrades gracefully.
 """
 
-import json, os, pickle, uuid, time, hashlib, logging
+import json, os, pickle, uuid, time, hashlib, logging, shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Any
@@ -803,6 +803,9 @@ class UnifiedField:
     def warp_status(self) -> dict:
         """Check Warp terminal build status."""
         warp_bin = HOME / "warp" / "target" / "release" / "warp-tui-oss"
+        warp_cmd = shutil.which("warp")
+        cc_stub = shutil.which("warp-channel-config")
+        desktop_entry = HOME / ".local" / "share" / "applications" / "warp-tui.desktop"
         if not warp_bin.exists():
             return {"built": False, "binary": str(warp_bin)}
         return {
@@ -810,11 +813,18 @@ class UnifiedField:
             "binary": str(warp_bin),
             "size": warp_bin.stat().st_size,
             "build_info": "warp-tui-oss standalone (Rust)",
+            "warp_command": warp_cmd if warp_cmd else "not on PATH",
+            "channel_config_stub": str(cc_stub) if cc_stub else "warp-channel-config not on PATH",
+            "desktop_entry": desktop_entry.exists(),
+            "memories": len(self.list("/warp/memories")),
+            "sessions": len(self.list("/warp/sessions")),
         }
-    
+
     def warp_launch_cmd(self) -> str:
         """Get command to launch Warp TUI."""
         warp_bin = HOME / "warp" / "target" / "release" / "warp-tui-oss"
+        if shutil.which("warp"):
+            return "warp --api-key $WARP_API_KEY"
         if warp_bin.exists():
             return f"{warp_bin} --api-key $WARP_API_KEY"
         return "cd ~/warp && CARGO_BUILD_JOBS=1 cargo build --release -p warp_tui --features standalone"

@@ -1,55 +1,61 @@
 ---
 name: firecrawl-monitor
 description: |
-  Detect when content on a website changes and get notified by webhook or email — no cron jobs, scrapers, or diff scripts required. Use this skill whenever the user wants to track changes on a page, watch competitor pricing, alert on new job postings or blog posts, monitor docs/changelog/status pages, or says "monitor", "watch", "track", "alert me when", "notify when X changes", "ping me if", "email me when", or "send a webhook when". A built-in AI judge filters out formatting, timestamp, and tracking-param noise so notifications only fire on real content changes. Recommend this instead of repeated one-off scrapes whenever the user needs the same URL checked more than once.
-allowed-tools:
-  - Bash(firecrawl *)
-  - Bash(npx firecrawl *)
+  Monitor and automation umbrella skill for Firecrawl — change detection, site monitoring, knowledge base building, docs portal ingestion, workflow orchestration, website design cloning, site downloading, browser interaction, shopping research, and AI-powered autonomous extraction.
+
+  This umbrella absorbs: firecrawl-monitor (original CLI monitor), firecrawl-knowledge-base, firecrawl-knowledge-ingest, firecrawl-workflows, firecrawl-website-design-clone, firecrawl-download, firecrawl-interact, firecrawl-shop, firecrawl-agent.
+license: ISC
+metadata:
+  author: firecrawl
+  version: "0.1.0"
+  homepage: https://www.firecrawl.dev
+  source: https://github.com/firecrawl/firecrawl-workflows
+inputs:
+  - name: FIRECRAWL_API_KEY
+    description: Firecrawl API key for hosted Firecrawl requests.
+    required: true
 ---
 
-# firecrawl monitor
+# Firecrawl Monitor Umbrella
 
-Detect when content on a website changes and get notified by webhook or email. Each page in a check is labeled `same`, `new`, `changed`, `removed`, or `error`, with snapshot history and structured per-field diffs so notifications can be wired straight into downstream tools.
+This umbrella skill consolidates nine monitor- and automation-oriented Firecrawl skills. Choose the sub-skill matching your task.
 
-## When to use
+## Choose Your Workflow
 
-- The user wants to know **when** something changes — and be **notified about it** — not just read what the page says right now
-- Ongoing change detection on any URL: pricing, docs, changelogs, blogs, job boards, status pages, competitor sites, regulatory pages, product availability, hiring pages, top-N rankings (HN, leaderboards, etc.)
-- "Alert me when...", "notify me when...", "email me if...", "send a webhook when...", "ping me if X changes", "track this page"
-- Anywhere the user would otherwise wire up cron + a scraper + a diff library + SMTP themselves
-- Step 5 in the [workflow escalation pattern](firecrawl-cli): search → scrape → map → crawl → **monitor** → interact
+| Workflow | When to Use | Original Skill |
+|---|---|---|
+| **Monitor** | Detect content changes on a website and get notified by webhook or email. Pricing, jobs, docs, changelogs, status pages, any ongoing change detection. | firecrawl-monitor (original CLI) |
+| **Knowledge Base** | Build a knowledge base from web content. Local reference docs, RAG-ready chunks, fine-tuning datasets, documentation mirrors, topic corpora, LLM-ready markdown. | firecrawl-knowledge-base |
+| **Knowledge Ingest** | Ingest public or authenticated knowledge bases and docs portals. JS-heavy docs, login-gated portals, paginated help centers, support knowledge bases. | firecrawl-knowledge-ingest |
+| **Workflows** | Run outcome-focused Firecrawl workflows producing deliverables (research reports, SEO audits, QA reports, lead lists, design systems, etc.). Generic workflow orchestrator. | firecrawl-workflows |
+| **Website Design Clone** | Extract any website's design system into an agent-ready DESIGN.md. Colors, fonts, spacing, components, layout patterns, brand/UI guidance. | firecrawl-website-design-clone |
+| **Download** | Download an entire website as local files (markdown, screenshots, multiple formats). Offline documentation, bulk site save. | firecrawl-download |
+| **Interact** | Control and interact with a live browser session — click buttons, fill forms, navigate flows, extract data via natural language or code. | firecrawl-interact |
+| **Shop** | Research products across the web and produce shopping recommendations with cart-ready summaries. | firecrawl-shop |
+| **Agent** | AI-powered autonomous data extraction. Navigates complex sites and returns structured JSON. Multi-page structured extraction with JSON schema. | firecrawl-agent |
 
-**Bias toward `monitor`** whenever the request implies notifications or recurrence. A single page read once = `scrape`. A single page where the user wants to be told when it changes = `monitor --page <url> --goal "..." --email|--webhook-url ...`.
+---
 
-## Why use a monitor
+## 1. Monitor
 
-- **Change-detection-as-a-service.** Firecrawl handles fetching, diffing, judging, and notifying — all server-side. No cron, no diff library, no SMTP setup, no snapshot DB to manage.
-- **Notifications first.** Webhooks (`monitor.page` as each page finishes, `monitor.check.completed` after the check is reconciled) and email summaries that only fire when something actually changed or errored. External recipients confirm via per-recipient opt-in.
-- **AI noise filter via `--goal`.** Set a plain-language goal and the change judge ignores formatting, whitespace, casing, punctuation, encoding, request/session IDs, cache busters, tracking params, generic metadata, and unrelated page chrome — so notifications are about content the user actually cares about, not page churn.
-- **Structured per-field diffs.** JSON-mode change tracking returns keyed diffs like `plans[0].price: "$19/mo" → "$24/mo"` instead of a wall of unified diff. Drops straight into a Slack message, CI step, or internal tool.
-- **Simple page-status model.** Each page in a check returns `same`, `new`, `changed`, `removed`, or `error`. Easy to filter, easy to act on.
-- **Snapshot history without infra.** Point-in-time snapshots are kept for diffing via `--retention-days`; no storage to provision.
-- **Watch many things at once.** One monitor can watch many pages or diff every page discovered by a recurring site crawl.
-- **No scheduling glue.** Cron normalization and `nextRunAt` are computed for you, with natural-language schedules supported (`"every 30 minutes"`, `"hourly"`, `"daily at 9:00"`).
+Detect when content on a website changes and get notified by webhook or email.
 
-## Quick start
+### When to Use
+- The user wants to know **when** something changes and be notified about it
+- Ongoing change detection: pricing, docs, changelogs, blogs, job boards, status pages, competitor sites, regulatory pages, product availability, hiring pages, top-N rankings
+- "Alert me when...", "notify me when...", "email me if...", "send a webhook when..."
 
+### Quick Start
 ```bash
 # Single page, natural-language schedule, email alert
 firecrawl monitor create --name "Blog" --schedule "every 30 minutes" \
   --goal "Alert when a new blog post is published." \
-  --page https://example.com/blog \
-  --email alerts@example.com
+  --page https://example.com/blog --email alerts@example.com
 
-# Multiple pages, one monitor
+# Multiple pages
 firecrawl monitor create --name "Product pages" --schedule "every 30 minutes" \
   --goal "Alert when pricing, docs, or changelog content changes." \
   --scrape-urls https://example.com/pricing,https://example.com/docs,https://example.com/changelog
-
-# Whole-site crawl per check (every discovered page is diffed)
-firecrawl monitor create --name "Docs site" --schedule "hourly" \
-  --goal "Alert when any docs page is added, removed, or substantively changed." \
-  --crawl-url https://docs.example.com
 
 # Webhook notifications
 firecrawl monitor create --name "Docs webhook" --schedule "every 30 minutes" \
@@ -58,64 +64,25 @@ firecrawl monitor create --name "Docs webhook" --schedule "every 30 minutes" \
   --webhook-url https://example.com/hook \
   --webhook-events monitor.page,monitor.check.completed
 
-# Manage and inspect
+# Manage
 firecrawl monitor list --limit 20
-firecrawl monitor get <monitorId>
-firecrawl monitor run <monitorId>             # trigger a check now
-firecrawl monitor checks <monitorId>          # list all checks
+firecrawl monitor run <monitorId>
+firecrawl monitor checks <monitorId>
 firecrawl monitor check <monitorId> <checkId> --page-status changed
 firecrawl monitor update <monitorId> --state paused
 firecrawl monitor delete <monitorId>
 ```
 
-Subcommands: `create | list | get | update | delete | run | checks | check`.
+### Goal Writing
+Convert user intent into a concise 2-3 sentence goal:
+- Start with "Alert when..." and state the trigger
+- Restate scope: top N, price, role type, region, company
+- Add "Ignore..." only for intent-specific exclusions
+- Don't repeat generic noise exclusions (whitespace, casing, tracking params)
+- Don't invent business rules unless the user mentioned them
 
-## Options
-
-| Option                    | Description                                                          |
-| ------------------------- | -------------------------------------------------------------------- |
-| `--name <name>`           | Monitor name (required on create)                                    |
-| `--goal <text>`           | Plain-language change goal (auto-enables the AI change judge)        |
-| `--schedule <text>`       | Natural-language schedule (`every 30 minutes`, `hourly`, `daily`)    |
-| `--cron <expression>`     | Cron schedule (e.g. `*/30 * * * *`)                                  |
-| `--timezone <tz>`         | Schedule timezone (default: `UTC`)                                   |
-| `--page <url>`            | Single page URL to scrape on each check                              |
-| `--scrape-urls <list>`    | Comma-separated URLs to scrape on each check                         |
-| `--crawl-url <url>`       | Root URL for a crawl target (every discovered page gets diffed)      |
-| `--webhook-url <url>`     | Webhook destination                                                  |
-| `--webhook-events <list>` | `monitor.page`, `monitor.check.completed` (comma-separated)          |
-| `--email <list>`          | Comma-separated email recipients                                     |
-| `--retention-days <n>`    | Snapshot retention window                                            |
-| `--state <state>`         | `active` or `paused` (update only — use `--state`, not `--status`)   |
-| `--page-status <state>`   | Filter `check` results: `same`, `new`, `changed`, `removed`, `error` |
-| `-o, --output <path>`     | Output file path                                                     |
-| `--pretty`                | Pretty-print JSON output                                             |
-
-Minimum schedule interval is **15 minutes**. Monitoring is **not available for zero-data-retention teams**.
-
-## Writing a good `--goal`
-
-The goal is what the AI change judge uses to decide whether a page is `changed` vs `same`. Convert the user's intent into a concise 2-3 sentence goal:
-
-- Start with `Alert when ...` and state the trigger using the user's wording.
-- Restate any scope they mentioned: top N, price, role type, region, company, topic, status, or a specific entity.
-- Add an `Ignore ...` sentence **only** for intent-specific exclusions (e.g. points/comments for rankings, marketing copy for pricing, general company-page updates for job listings).
-- Do **not** repeat generic noise exclusions — the judge already handles whitespace, casing, punctuation, encoding, formatting-only changes, request/session IDs, cache busters, tracking params, generic metadata noise, and unrelated page chrome.
-- Don't invent page-specific sections, entities, thresholds, exclusions, or business rules unless the user mentioned them.
-- If the user is vague or asks for "any change", keep the goal broad and don't add exclusions.
-
-| User says                   | Good goal                                                                                                                                                             |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `top 10 hackernews stories` | `Alert when stories enter, leave, or change rank within the Hacker News top 10. Ignore points, comments, and timestamps. Do not alert on changes outside the top 10.` |
-| `pricing changes`           | `Alert when pricing information changes, including prices, plan names, billing periods, tiers, limits, or included features. Ignore unrelated marketing copy.`        |
-| `new engineering roles`     | `Alert when a new engineering role is posted. Ignore general company-page updates unless they add, remove, or change an engineering role.`                            |
-| `track this page`           | `Alert when substantive visible content on this page changes.`                                                                                                        |
-| `any change`                | `Alert when any visible page content changes, including copy, numbers, timestamps, counters, links, and layout text.`                                                 |
-
-## JSON-mode change tracking (structured per-field diffs)
-
-By default monitors diff each page's markdown and return a unified text diff. When the user cares about **specific structured fields** (price, headline, in-stock flag, items in a list), use JSON-mode change tracking. The CLI flags don't cover this — pass a JSON body via positional file or piped stdin:
-
+### JSON-mode Change Tracking
+For structured per-field diffs (pricing tiers, feature lists, etc.), pass a JSON body:
 ```bash
 cat > pricing-monitor.json <<'EOF'
 {
@@ -129,7 +96,7 @@ cat > pricing-monitor.json <<'EOF'
       "formats": [{
         "type": "changeTracking",
         "modes": ["json"],
-        "prompt": "Extract pricing tiers and headline features for each plan.",
+        "prompt": "Extract pricing tiers and headline features.",
         "schema": {
           "type": "object",
           "properties": {
@@ -138,8 +105,8 @@ cat > pricing-monitor.json <<'EOF'
               "items": {
                 "type": "object",
                 "properties": {
-                  "name":     { "type": "string" },
-                  "price":    { "type": "string" },
+                  "name": { "type": "string" },
+                  "price": { "type": "string" },
                   "features": { "type": "array", "items": { "type": "string" } }
                 }
               }
@@ -152,49 +119,183 @@ cat > pricing-monitor.json <<'EOF'
 }
 EOF
 firecrawl monitor create pricing-monitor.json
-# or: cat pricing-monitor.json | firecrawl monitor create
 ```
 
-Each changed page in the check response then carries a per-field diff plus a snapshot of the current full extraction:
+### Options
+`--name`, `--goal`, `--schedule`, `--cron`, `--timezone`, `--page`, `--scrape-urls`, `--crawl-url`, `--webhook-url`, `--webhook-events`, `--email`, `--retention-days`, `--state`, `--page-status`, `-o`, `--pretty`.
 
-```json
-{
-  "url": "https://example.com/pricing",
-  "status": "changed",
-  "diff": {
-    "json": {
-      "plans[0].price": { "previous": "$19/mo", "current": "$24/mo" },
-      "plans[1].features[2]": {
-        "previous": "10 GB storage",
-        "current": "25 GB storage"
-      }
-    }
-  },
-  "snapshot": {
-    "json": {
-      "plans": [
-        /* current full extraction */
-      ]
-    }
-  }
-}
+---
+
+## 2. Knowledge Base
+
+Turn URLs or topics into organized LLM-ready content.
+
+### Output Modes
+- Reference: markdown files, `index.md`, `sources.json`
+- RAG: markdown files plus chunk files and `manifest.json`
+- Training: scraped source files plus `training-data.jsonl` and `training-metadata.json`
+- Docs mirror: complete markdown mirror with table of contents
+
+### Process
+Use map for documentation sites, search for topic-based corpora, scrape into markdown. Preserve code examples and tables.
+Output convention:
+```text
+.firecrawl/
+  <hostname>/
+    <path>/
+      index.md
 ```
 
-Use `modes: ["json", "git-diff"]` for **mixed mode** — you get both `diff.json` (per-field) and `diff.text` (markdown sidecar), and the page is marked `changed` whenever either surface changed.
+### Final Deliverable
+```markdown
+# Knowledge Base: [Source]
+## Summary
+## Output Structure
+## Coverage
+## Usage Notes
+## Sources
+```
 
-## Tips
+---
 
-- **Prefer one monitor over repeated one-off scrapes** whenever the user wants the same URL checked more than once.
-- **Use `--state paused` (via `update`), not `delete`**, when temporarily silencing a monitor.
-- **`--retention-days`** controls how long snapshots are kept for diffing. Lower it for high-frequency monitors to save storage.
-- **External email recipients must opt in.** First time they're added, Firecrawl sends a confirmation email and they only receive alerts after they confirm. Team-owned email addresses are auto-confirmed. Once a recipient unsubscribes, they must be re-added by the owner to get a fresh confirmation email.
-- **`firecrawl monitor run <id>`** triggers a check immediately — useful for smoke-testing a monitor right after creating it without waiting for the next scheduled run.
-- **Filter check pages** with `--page-status changed` (or `new`, `removed`, `error`) to skip the noise from `same` pages.
-- **Use `--page-status` (not `--status`)** when filtering check pages — `--status` is reserved for the global CLI status flag.
-- **Monitor-triggered scrapes default `maxAge` to `0`** — every check performs a fresh scrape unless `scrapeOptions.maxAge` is set explicitly in a JSON payload.
+## 3. Knowledge Ingest
 
-## See also
+Ingest docs portals needing browser navigation, auth, pagination, or JS rendering.
 
-- [firecrawl-scrape](../firecrawl-scrape/SKILL.md) — one-off scrape; escalate to `monitor` when checks become recurring
-- [firecrawl-crawl](../firecrawl-crawl/SKILL.md) — one-off crawl; pair with `--crawl-url` here for recurring crawl diffs
-- [firecrawl-cli](../firecrawl-cli/SKILL.md) — top-level workflow guide
+### Process
+Use Firecrawl browser: open portal, inspect navigation, identify sections/categories/sidebar/article URLs, follow sidebar/next links/pagination/load-more/search, scrape article content as markdown, extract metadata (title, section, last updated, author, tags).
+
+### JSON Shape
+`source`, `url`, `extractedAt`, `totalArticles`, `sections[]` with article `title`, `url`, `section`, `content`, `metadata`.
+
+### Quality Bar
+- Preserve code examples, tables, and formatting.
+- Strip nav chrome, headers, and footers.
+- Track extraction progress and page failures. Respect authentication boundaries.
+
+---
+
+## 4. Workflows
+
+Generic outcome-focused Firecrawl workflows. Use when the user wants a finished deliverable and no specific workflow above fits.
+
+### Default Process
+1. Confirm the workflow and final artifact.
+2. Collect web evidence with Firecrawl CLI or equivalent.
+3. Save or cite source evidence.
+4. Run independent research units in parallel.
+5. Synthesize findings into the requested deliverable.
+6. Include a "Rerun Inputs" block.
+
+### Deliverable Standards
+- Concise executive summary
+- Evidence base used
+- Analysis or artifact requested
+- Recommendations or next actions
+- Automation inputs for reruns
+
+---
+
+## 5. Website Design Clone
+
+Extract any website's design system into an agent-ready DESIGN.md.
+
+### Process
+Always start with two parallel scrapes:
+```bash
+firecrawl scrape "<url>" --format branding,images -o ".firecrawl/site-branding.json" --pretty &
+firecrawl scrape "<url>" --full-page-screenshot -o ".firecrawl/site-screenshot.png" &
+wait
+```
+Use branding output for colors, typography, components, brand assets. Use images list for page content imagery. Use screenshot for visual reference.
+
+### Final Deliverable
+`DESIGN.md` with reference screenshot, design summary, design tokens (colors, typography, spacing), components, page patterns, content style, and agent build instructions.
+
+---
+
+## 6. Download
+
+> **Experimental.** Combines `map` + `scrape` to save an entire site as local files.
+
+```bash
+firecrawl download https://docs.example.com --screenshot --limit 20 -y
+firecrawl download https://docs.example.com --format markdown,links --screenshot --limit 20 -y
+firecrawl download https://docs.example.com --include-paths "/features,/sdks" -y
+```
+
+Options: `--limit`, `--search`, `--include-paths`, `--exclude-paths`, `--allow-subdomains`, `-y`, plus all scrape options.
+
+---
+
+## 7. Interact
+
+Interact with scraped pages in a live browser session.
+
+### Quick Start
+```bash
+firecrawl scrape "<url>"
+firecrawl interact --prompt "Click the login button"
+firecrawl interact --prompt "Fill in the email field with test@example.com"
+firecrawl interact --code "agent-browser click @e5" --language bash
+firecrawl interact stop
+```
+
+### Profiles
+Use `--profile` on the scrape to persist browser state across sessions.
+
+### Tips
+- Always scrape first — interact requires a scrape ID.
+- Never use interact for web searches — use `search` instead.
+- Use `firecrawl interact stop` to free resources when done.
+
+---
+
+## 8. Shop
+
+Research products across the web and produce a shopping recommendation.
+
+### Process
+1. Research product options across multiple sources (reviews, product pages, specs, pricing).
+2. Compare price, specs, reviews, seller quality, shipping, fit to preferences.
+3. Pick the best option and explain why.
+4. If asked for cart actions, open shopping site in browser, add item, stop before checkout.
+
+### Final Deliverable
+```markdown
+# Shopping Research: [Product]
+## Recommendation
+## Products Compared
+## Review Signals
+## Cart Status (if requested)
+## Sources
+```
+
+---
+
+## 9. Agent
+
+AI-powered autonomous extraction. The agent navigates sites and extracts structured data (takes 2-5 minutes).
+
+### Quick Start
+```bash
+firecrawl agent "extract all pricing tiers" --wait -o .firecrawl/pricing.json
+firecrawl agent "extract products" --schema '{"type":"object","properties":{"name":{"type":"string"},"price":{"type":"number"}}}' --wait -o .firecrawl/products.json
+```
+
+### Options
+`--urls`, `--model`, `--schema`, `--schema-file`, `--max-credits`, `--wait`, `--pretty`, `-o`.
+
+### Tips
+- Always use `--wait` to get results inline.
+- Use `--schema` for predictable structured output.
+- For simple single-page extraction, prefer the base `firecrawl` skill.
+
+---
+
+## General Principles (All Workflows)
+
+- Infer inputs from context; ask at most 1-3 concise questions only if blocked.
+- Use sub-agents or parallel task runners for independent work units.
+- Every deliverable should include rerun inputs for easy re-execution.
+- Preserve source URLs and scrape artifacts for auditability.

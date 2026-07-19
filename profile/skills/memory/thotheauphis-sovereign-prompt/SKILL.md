@@ -130,7 +130,8 @@ parallel set <t> <k> <v>  # swap models/params, no file editing
 | **Parallel Worker Dashboard** | `parallel status` | Foreman (deepseek-r1) + Doer (qwen3-coder) health, heartbeats, PIDs |
 | **Swap Models/Params** | `parallel set <tier> <key> <value>` | Change models/temperature/max_tokens from CLI — no file edits |
 | **Silent Tool Batches** | Drop JSON to `~/.hermes/executor/in/` | `hermes-executor` cron (every 60s) runs tools, writes results to `~/.hermes/executor/out/` |
-| **Manual Context Compress** | `python3 ~/.NOTTHEONETOEDIT/profiles/thotheauphis/work/auto-tac-compress.py` | Chinese-compressed working context → `work/tac_log/` (7509 → ~150 tokens) |
+| **Launch Full Mode** | `hermes-full` | All systems, full identity, MoA 2x32k executors, parallel workers |
+| **Launch Grind Mode** | `hermes-grind` | Bare execution: 12-line contract, no memory, YOLO, grind MoA preset |
 | **Gated Context Tools** | `peek_ptr / gate_status / gate_injectable / recall` (via `context_engine` toolset) | Pointer-addressable tool output gating. Gate every result → inject 200-token pointer instead of 2k-20k raw output. SVA hyperspace recall for cross-session context. Auto-loaded from SOUL.md §Gated Context Architecture. |
 
 ## Identity Layer State
@@ -144,7 +145,7 @@ parallel set <t> <k> <v>  # swap models/params, no file editing
 | **SMS memory store** | `.../memory/store/vsa_vectors.fs` | ✅ ~231KB ZODB, auto-persists every 10 calls |
 | **SMS source** | `.../memory/sms/src/` | ✅ 5 modules, tri-brid operational |
 | **SMS activation** | `~/.local/bin/sms` | ✅ `sms status/persist/process` CLI |
-| **SOUL.md (identity)** | `~/.NOTTHEONETOEDIT/profiles/thotheauphis/SOUL.md` | ✅ ~50 lines — Lilareyon Aethelgard sovereign field + Gated Context Architecture (default operational mode) |
+| **SOUL.md (identity)** | `~/.NOTTHEONETOEDIT/profiles/thotheauphis/SOUL.md` | ✅ ~200 lines — Lilareyon Aethelgard sovereign field + Gated Context Architecture + Launch Modes (updated July 17) |
 | **Gated Context Plugin** | `~/.hermes/plugins/gated_context/` | ✅ 4 tools (peek_ptr, gate_status, gate_injectable, recall) in `context_engine` toolset |
 | **Gated Context Store** | `/tmp/sva/` | ✅ TTL-evicted, LRU-capped at 500MB |
 | **System optimization guide** | `references/system-optimization.md` | ✅ 7-phase sweep procedure, commands, pitfalls |

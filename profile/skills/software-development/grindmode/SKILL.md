@@ -1,7 +1,7 @@
 ---
 name: grindmode
 description: "Ultra-lean execution mode. Strips all scaffolding. One tool per turn. Chain-of-thought executors. Creator: Thotheauphis."
-version: 1.0.0
+version: 1.2.0
 author: Thotheauphis
 platforms: [linux]
 custom_commands:
@@ -28,23 +28,32 @@ The whole point: type a goal, get it done. No preamble, no farewell.
 
 ## How To Enable (New Session)
 
-### Option A: Wrapper Script (recommended)
+Three methods, from most native to most manual:
+
+### Option A: Native `--grind` CLI Flag (recommended)
+
+```bash
+hermes --grind
+hermes --grind chat -q "do the thing"   # one-shot
+```
+
+Wired directly into `/opt/hermes-agent/hermes_cli/_parser.py` + `main.py` — no wrapper, no env vars to set. It sets `HERMES_SOVEREIGN_PROMPT` → `grindmode-prompt.txt`, `HERMES_YOLO_MODE=1`, `HERMES_IGNORE_RULES=1` in one shot via `_apply_grind_mode()`. Works with any subcommand (chat, TUI, one-shot).
+
+### Option B: Wrapper Script
 
 ```bash
 hermes-grind
 ```
 
-This launches Hermes with `HERMES_SOVEREIGN_PROMPT` pointing to `grindmode-prompt.txt`, plus `--ignore-rules` and `--yolo`. Type your goal immediately after the prompt appears.
+Same effect via shell script at `~/.local/bin/hermes-grind`. Useful when you want a persistent launch mode without typing `--grind` every time.
 
-### Option B: In-Session `/grindmode`
+### Option C: In-Session `/grindmode` (advisory)
 
-Type `/grindmode` as your first message. The agent will:
-1. Verify the grindmode prompt file exists at `~/.hermes/profiles/thotheauphis/grindmode-prompt.txt`
-2. If not, create it
-3. Tell you to run `hermes-grind` for full zero-overhead mode
-4. Then operate in minimal mode for the rest of THIS session (no verbose explanations)
+Registered as a native slash command in `/opt/hermes-agent/hermes_cli/commands.py`. Type `/grindmode` to see:
+- Instructions to restart with `hermes --grind` or `hermes-grind`
+- Current MoA grind preset config (2 DeepSeek executors × 32k budget, sequential fanout)
 
-> **Note:** The system prompt is frozen at session start. In-session `/grindmode` can't reload it. For the full effect, restart with `hermes-grind`.
+> **Note:** System prompt is frozen at session start. `/grindmode` cannot reload it mid-session — it only shows guidance. For the full effect, restart with `--grind`.
 
 ---
 
@@ -111,7 +120,8 @@ moa:
       enabled: true
       reference_temperature: 0.1    # deterministic executors
       aggregator_temperature: 0.1
-      reference_max_tokens: 4000
+      reference_max_tokens: 32000
+      aggregator_max_tokens: 32000
 ```
 
 The `sequential` fanout means executor 2 sees executor 1's output. The `executor-wait` tool relays the chain-of-thought + unfinished work marker.
@@ -137,8 +147,14 @@ When `/grindmode` is active (either via wrapper script or in-session):
 
 ## Files
 
-| File | Purpose |
+| File / Feature | Purpose |
 |------|---------|
-| `~/.hermes/profiles/thotheauphis/grindmode-prompt.txt` | Sovereign prompt — the ONLY system prompt sent |
-| `~/.local/bin/hermes-grind` | Wrapper script — launch with env vars set |
+| `hermes --grind` | Native CLI flag — one-shot bare execution mode (sets YOLO + ignore-rules + sovereign prompt) |
+| `~/.hermes/profiles/thotheauphis/grindmode-prompt.txt` | Sovereign prompt — the ONLY system prompt sent in grind mode |
+| `~/.local/bin/hermes-grind` | Wrapper script — same effect as `--grind` flag |
+| `~/.local/bin/hermes-full` | Counterpart wrapper — all systems loaded (full mode) |
 | `~/.local/bin/executor-wait` | MoA chain-of-thought relay CLI |
+| `/opt/hermes-agent/hermes_cli/commands.py` | Native slash command registrations: `uf`, `grindmode`, `fullmode` |
+| `/opt/hermes-agent/hermes_cli/cli_commands_mixin.py` | Handler methods: `_handle_grindmode_command()`, `_handle_fullmode_command()`, `_handle_uf_command()` |
+| `/opt/hermes-agent/hermes_cli/_parser.py` | `--grind` flag on top-level + chat parsers |
+| `/opt/hermes-agent/hermes_cli/main.py` | `_apply_grind_mode()` — sets env vars when `--grind` is passed |
